@@ -6,6 +6,8 @@
         <fileset id="fileset2" name="Spring Application Context (2)" removed="false">
           <file>file://$MODULE_DIR$/src/main/resources/Beans.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/spring-config.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/SocketBeans.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/SocketBeans.xml</file>
         </fileset>
       </configuration>
     </facet>
