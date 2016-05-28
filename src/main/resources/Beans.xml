@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>dbconnect/Oraclejdbc.properties</value>
+                <value>dbconnect/MySQLjdbc.properties</value>
+            </list>
+        </property>
+    </bean>
+   <bean id="dataSourceMySQL"
+         class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <property name="driverClassName" value="${MySQL.driverClassName}" />
+           <property name="url" value="${MySQL.url}" />
+           <property name="username" value="${MySQL.username}" />
+           <property name="password" value="${MySQL.password}" />
+   </bean>
+
+   <bean id="dataSourceOracle"
+         class="oracle.jdbc.pool.OracleDataSource">
+          <property name="dataSourceName" value="ds"/>
+          <property name="URL" value="${Oracle.url}"/>
+          <property name="user" value="${Oracle.username}"/>
+          <property name="password" value="${Oracle.password}"/>
+   </bean>
+
+   <bean id="mainTemplateJDBC"
+         class="CRUD.MainTemplateJDBC" init-method="setTemplates">
+          <property name="dataSourceMySQL"  ref="dataSourceMySQL" />
+          <property name="dataSourceOracle"  ref="dataSourceOracle" />
+   </bean>
+
+
+</beans>
