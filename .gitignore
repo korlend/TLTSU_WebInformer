@@ -1,4 +1,4 @@
-.properties
-.idea/workspace.xml
+src/main/resources/dbconnect
 src/main/resources/lib/
 target/
+.idea

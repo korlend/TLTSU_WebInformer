@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>${path-spring}</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>${version-spring}</version>
+        </dependency>
+        <dependency>
+            <groupId>${path-spring}</groupId>
             <artifactId>spring-context</artifactId>
             <version>${version-spring}</version>
         </dependency>
