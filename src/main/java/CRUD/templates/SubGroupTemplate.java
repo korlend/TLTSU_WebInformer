@@ -25,7 +25,7 @@ public class SubGroupTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("SubGroup");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("SubGroup").withSchemaName("tltsudb");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

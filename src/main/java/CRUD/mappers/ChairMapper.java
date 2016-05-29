@@ -14,7 +14,7 @@ public class ChairMapper implements RowMapper<Chair> {
         Chair chair = new Chair();
         chair.setOID(rs.getInt("OID"));
         chair.setName(rs.getString("Name"));
-        chair.setAuditorium(rs.getInt("Auditorium"));
+        //chair.setAuditorium(rs.getInt("Auditorium")); not exist in Oracle
         return chair;
     }
 }

@@ -25,7 +25,7 @@ public class StreamTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Stream");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Stream").withSchemaName("tltsudb");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

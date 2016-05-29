@@ -79,6 +79,16 @@ public class MainTemplateJDBC {
 
     public void findAllOracle() {
         buildingTemplate.findAllOracle();
+        chairTemplate.findAllOracle();
+        disciplineTemplate.findAllOracle();
+        streamTemplate.findAllOracle();
+        typeOfAuditoriumTemplate.findAllOracle();
+        lecturerTemplate.findAllOracle();
+        kindOfWorkTemplate.findAllOracle();
+        groupTemplate.findAllOracle();
+        subGroupTemplate.findAllOracle();
+        auditoriumTemplate.findAllOracle();
+        contentOfScheduleTemplate.findAllOracle();
     }
 
     public void findAllMySQL() {

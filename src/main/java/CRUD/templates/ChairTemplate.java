@@ -25,7 +25,7 @@ public class ChairTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Chair");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Chair").withSchemaName("tltsudb");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {
@@ -34,7 +34,7 @@ public class ChairTemplate extends JdbcTemplate {
     }
 
     public List<Chair> findAllMySQL() {
-        return this.jdbcTemplateObjectMySQL.query("select * from Chair", new ChairMapper());
+        return this.jdbcTemplateObjectMySQL.query("select * from chair", new ChairMapper());
     }
 
     public List<Chair> findAllOracle() {
@@ -55,7 +55,7 @@ public class ChairTemplate extends JdbcTemplate {
 
     public void addRowMySQL(Chair record) {
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("Auditorium", record.getAuditorium())
+                //.addValue("Auditorium", record.getAuditorium())
                 .addValue("Name", record.getName())
                 .addValue("OID", record.getOID());
         this.jdbcInsertMySQL.execute(parameters);
@@ -63,7 +63,7 @@ public class ChairTemplate extends JdbcTemplate {
 
     public void addRowOracle(Chair record) {
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("Auditorium", record.getAuditorium())
+                //.addValue("Auditorium", record.getAuditorium())
                 .addValue("Name", record.getName())
                 .addValue("OID", record.getOID());
         this.jdbcInsertOracle.execute(parameters);
