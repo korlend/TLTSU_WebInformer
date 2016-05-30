@@ -13,7 +13,7 @@ public class SubGroupMapper implements RowMapper<SubGroup> {
     public SubGroup mapRow(ResultSet rs, int rowNum) throws SQLException {
         SubGroup subGroup = new SubGroup();
         subGroup.setOID(rs.getInt("OID"));
-        subGroup.setGroup(rs.getInt("Group"));
+        subGroup.setGroup(rs.getInt("GroupOID"));
         return subGroup;
     }
 }

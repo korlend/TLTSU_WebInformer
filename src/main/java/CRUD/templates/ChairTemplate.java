@@ -25,7 +25,7 @@ public class ChairTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Chair").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`chair`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

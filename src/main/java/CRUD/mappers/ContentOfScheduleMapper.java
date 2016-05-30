@@ -14,7 +14,7 @@ public class ContentOfScheduleMapper implements RowMapper<ContentOfSchedule> {
         ContentOfSchedule contentOfSchedule = new ContentOfSchedule();
         contentOfSchedule.setOID(rs.getInt("OID"));
         contentOfSchedule.setDiscipline(rs.getInt("Discipline"));
-        contentOfSchedule.setGroup(rs.getInt("Group"));
+        contentOfSchedule.setGroup(rs.getInt("GroupOID"));
         contentOfSchedule.setKindOfWork(rs.getInt("KindOfWork"));
         contentOfSchedule.setLecturer(rs.getInt("Lecturer"));
         contentOfSchedule.setStream(rs.getInt("Stream"));

@@ -78,6 +78,7 @@ public class MainTemplateJDBC {
     }
 
     public void findAllOracle() {
+
         buildingTemplate.findAllOracle();
         chairTemplate.findAllOracle();
         disciplineTemplate.findAllOracle();
@@ -88,6 +89,7 @@ public class MainTemplateJDBC {
         groupTemplate.findAllOracle();
         subGroupTemplate.findAllOracle();
         auditoriumTemplate.findAllOracle();
+
         contentOfScheduleTemplate.findAllOracle();
     }
 
@@ -95,10 +97,14 @@ public class MainTemplateJDBC {
         buildingTemplate.findAllMySQL();
     }
 
+    public List<ContentOfSchedule> ret() {
+        return contentOfScheduleTemplate.findAllOracle();
+    }
+
     public void collectData() {
         /**
          * 0 lvl
-         */
+
         buildingTemplate.addListMySQL(buildingTemplate.findAllOracle());
         chairTemplate.addListMySQL(chairTemplate.findAllOracle());
         disciplineTemplate.addListMySQL(disciplineTemplate.findAllOracle());
@@ -106,17 +112,18 @@ public class MainTemplateJDBC {
         typeOfAuditoriumTemplate.addListMySQL(typeOfAuditoriumTemplate.findAllOracle());
         lecturerTemplate.addListMySQL(lecturerTemplate.findAllOracle());
         kindOfWorkTemplate.addListMySQL(kindOfWorkTemplate.findAllOracle());
-
+        */
         /**
          * 1 lvl
-         */
+
         groupTemplate.addListMySQL(groupTemplate.findAllOracle());
         subGroupTemplate.addListMySQL(subGroupTemplate.findAllOracle());
         auditoriumTemplate.addListMySQL(auditoriumTemplate.findAllOracle());
-
+        */
         /**
          * 2 lvl
          */
+
         contentOfScheduleTemplate.addListMySQL(contentOfScheduleTemplate.findAllOracle());
     }
     /**

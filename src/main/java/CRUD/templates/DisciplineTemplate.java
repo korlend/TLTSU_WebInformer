@@ -25,7 +25,7 @@ public class DisciplineTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Discipline").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`discipline`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

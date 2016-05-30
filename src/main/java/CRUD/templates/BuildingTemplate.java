@@ -25,7 +25,7 @@ public class BuildingTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("Building").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`building`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

@@ -25,7 +25,7 @@ public class KindOfWorkTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("KindOfWork").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`kindOfWork`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {

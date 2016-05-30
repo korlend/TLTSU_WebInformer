@@ -25,7 +25,7 @@ public class ContentOfScheduleTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("ContentOfSchedule").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`contentofschedule`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {
@@ -38,7 +38,17 @@ public class ContentOfScheduleTemplate extends JdbcTemplate {
     }
 
     public List<ContentOfSchedule> findAllOracle() {
-        return this.jdbcTemplateObjectOracle.query("select * from \"ContentOfSchedule\"", new ContentOfScheduleMapper());
+        return this.jdbcTemplateObjectOracle.query("select OID," +
+                "\"StartOn\"," +
+                "\"EndOn\"," +
+                "\"ModifiedTime\"," +
+                "\"Discipline\"," +
+                "\"KindOfWork\"," +
+                "\"Lecturer\"," +
+                "\"Auditorium\"," +
+                "\"Stream\"," +
+                "\"Group\" as GroupOID," +
+                "\"SubGroup\" from \"ContentOfSchedule\"", new ContentOfScheduleMapper());
     }
 
     public void addListMySQL(List<ContentOfSchedule> list) {
@@ -55,17 +65,17 @@ public class ContentOfScheduleTemplate extends JdbcTemplate {
 
     public void addRowMySQL(ContentOfSchedule record) {
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("Auditorium", record.getAuditorium())
-                .addValue("Discipline", record.getDiscipline())
+                .addValue("Auditorium", record.getAuditorium() == 0 ? null : record.getAuditorium())
+                .addValue("Discipline", record.getDiscipline() == 0 ? null : record.getDiscipline())
                 .addValue("OID", record.getOID())
-                .addValue("KindOfWork", record.getKindOfWork())
-                .addValue("Lecturer", record.getLecturer())
-                .addValue("Stream", record.getStream())
-                .addValue("SubGroup", record.getSubGroup())
+                .addValue("KindOfWork", record.getKindOfWork() == 0 ? null : record.getKindOfWork())
+                .addValue("Lecturer", record.getLecturer() == 0 ? null : record.getLecturer())
+                .addValue("Stream", record.getStream() == 0 ? null : record.getStream())
+                .addValue("SubGroup", record.getSubGroup() == 0 ? null : record.getSubGroup())
                 .addValue("ModifiedTime", record.getModifiedTime())
                 .addValue("StartOn", record.getStartOn())
                 .addValue("EndOn", record.getEndOn())
-                .addValue("Group", record.getGroup());
+                .addValue("GroupOID", record.getGroup() == 0 ? null : record.getGroup());
         this.jdbcInsertMySQL.execute(parameters);
     }
 

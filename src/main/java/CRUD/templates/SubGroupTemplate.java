@@ -25,7 +25,7 @@ public class SubGroupTemplate extends JdbcTemplate {
 
     public void setDataSourceMySQL(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectMySQL = jdbcTemplate;
-        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("SubGroup").withSchemaName("tltsudb");
+        this.jdbcInsertMySQL = new SimpleJdbcInsert(jdbcTemplate).withTableName("`subgroup`");
     }
 
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {
@@ -38,7 +38,7 @@ public class SubGroupTemplate extends JdbcTemplate {
     }
 
     public List<SubGroup> findAllOracle() {
-        return this.jdbcTemplateObjectOracle.query("select * from \"SubGroup\"", new SubGroupMapper());
+        return this.jdbcTemplateObjectOracle.query("select \"OID\", \"Group\" as GroupOID from \"SubGroup\"", new SubGroupMapper());
     }
 
     public void addListMySQL(List<SubGroup> list) {
@@ -55,7 +55,7 @@ public class SubGroupTemplate extends JdbcTemplate {
 
     public void addRowMySQL(SubGroup record) {
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("Group", record.getGroup())
+                .addValue("GroupOID", record.getGroup())
                 .addValue("OID", record.getOID());
         this.jdbcInsertMySQL.execute(parameters);
     }
