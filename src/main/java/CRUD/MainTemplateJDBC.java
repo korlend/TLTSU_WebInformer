@@ -1,8 +1,7 @@
 package CRUD;
 
-import CRUD.tables.*;
-import CRUD.mappers.*;
-import CRUD.templates.*;
+import CRUD.tables.standard.*;
+import CRUD.DAO.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -29,17 +28,17 @@ public class MainTemplateJDBC {
     private List<TypeOfAuditorium> typeOfAuditorium;
 
 
-    private BuildingTemplate buildingTemplate;
-    private ChairTemplate chairTemplate;
-    private DisciplineTemplate disciplineTemplate;
-    private StreamTemplate streamTemplate;
-    private TypeOfAuditoriumTemplate typeOfAuditoriumTemplate;
-    private LecturerTemplate lecturerTemplate;
-    private KindOfWorkTemplate kindOfWorkTemplate;
-    private GroupTemplate groupTemplate;
-    private SubGroupTemplate subGroupTemplate;
-    private AuditoriumTemplate auditoriumTemplate;
-    private ContentOfScheduleTemplate contentOfScheduleTemplate;
+    private BuildingDAO buildingDAO;
+    private ChairDAO chairDAO;
+    private DisciplineDAO disciplineDAO;
+    private StreamDAO streamDAO;
+    private TypeOfAuditoriumDAO typeOfAuditoriumDAO;
+    private LecturerDAO lecturerDAO;
+    private KindOfWorkDAO kindOfWorkDAO;
+    private GroupDAO groupDAO;
+    private SubGroupDAO subGroupDAO;
+    private AuditoriumDAO auditoriumDAO;
+    private ContentOfScheduleDAO contentOfScheduleDAO;
 
     /**
      * connect data
@@ -64,41 +63,41 @@ public class MainTemplateJDBC {
         /**
          * initialization of templates
          */
-        buildingTemplate = new BuildingTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        chairTemplate = new ChairTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        disciplineTemplate = new DisciplineTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        streamTemplate = new StreamTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        typeOfAuditoriumTemplate = new TypeOfAuditoriumTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        lecturerTemplate = new LecturerTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        kindOfWorkTemplate = new KindOfWorkTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        groupTemplate = new GroupTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        subGroupTemplate = new SubGroupTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        auditoriumTemplate = new AuditoriumTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
-        contentOfScheduleTemplate = new ContentOfScheduleTemplate(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        buildingDAO = new BuildingDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        chairDAO = new ChairDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        disciplineDAO = new DisciplineDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        streamDAO = new StreamDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        typeOfAuditoriumDAO = new TypeOfAuditoriumDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        lecturerDAO = new LecturerDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        kindOfWorkDAO = new KindOfWorkDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        groupDAO = new GroupDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        subGroupDAO = new SubGroupDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        auditoriumDAO = new AuditoriumDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        contentOfScheduleDAO = new ContentOfScheduleDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
     }
 
     public void findAllOracle() {
 
-        buildingTemplate.findAllOracle();
-        chairTemplate.findAllOracle();
-        disciplineTemplate.findAllOracle();
-        streamTemplate.findAllOracle();
-        typeOfAuditoriumTemplate.findAllOracle();
-        lecturerTemplate.findAllOracle();
-        kindOfWorkTemplate.findAllOracle();
-        groupTemplate.findAllOracle();
-        subGroupTemplate.findAllOracle();
-        auditoriumTemplate.findAllOracle();
+        buildingDAO.findAllOracle();
+        chairDAO.findAllOracle();
+        disciplineDAO.findAllOracle();
+        streamDAO.findAllOracle();
+        typeOfAuditoriumDAO.findAllOracle();
+        lecturerDAO.findAllOracle();
+        kindOfWorkDAO.findAllOracle();
+        groupDAO.findAllOracle();
+        subGroupDAO.findAllOracle();
+        auditoriumDAO.findAllOracle();
 
-        contentOfScheduleTemplate.findAllOracle();
+        contentOfScheduleDAO.findAllOracle();
     }
 
     public void findAllMySQL() {
-        buildingTemplate.findAllMySQL();
+        buildingDAO.findAllMySQL();
     }
 
     public List<ContentOfSchedule> ret() {
-        return contentOfScheduleTemplate.findAllOracle();
+        return contentOfScheduleDAO.findAllOracle();
     }
 
     public void collectData() {
@@ -124,7 +123,7 @@ public class MainTemplateJDBC {
          * 2 lvl
          */
 
-        contentOfScheduleTemplate.addListMySQL(contentOfScheduleTemplate.findAllOracle());
+        contentOfScheduleDAO.addListMySQL(contentOfScheduleDAO.findAllOracle());
     }
     /**
      *
