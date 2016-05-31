@@ -58,7 +58,8 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
                 "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
-                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%'));";
+                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%')) " +
+                "or stream in (select OID from `stream` where `Name` like '%" + GroupOID + "%');";
         return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
     }
 
@@ -79,6 +80,7 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
                 "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
                 "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%')) " +
+                "or stream in (select OID from `stream` where `Name` like '%" + GroupOID + "%') " +
                 "and StartOn > '" + StartOn+ "' " +
                 "and StartOn < '" + EndOn + "' " +
                 ";";

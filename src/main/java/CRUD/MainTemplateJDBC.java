@@ -112,22 +112,22 @@ public class MainTemplateJDBC {
     public void collectData() {
         /**
          * 0 lvl
+         */
+        buildingDAO.addListMySQL(buildingDAO.findAllOracle());
+        chairDAO.addListMySQL(chairDAO.findAllOracle());
+        disciplineDAO.addListMySQL(disciplineDAO.findAllOracle());
+        streamDAO.addListMySQL(streamDAO.findAllOracle());
+        typeOfAuditoriumDAO.addListMySQL(typeOfAuditoriumDAO.findAllOracle());
+        lecturerDAO.addListMySQL(lecturerDAO.findAllOracle());
+        kindOfWorkDAO.addListMySQL(kindOfWorkDAO.findAllOracle());
 
-        buildingTemplate.addListMySQL(buildingTemplate.findAllOracle());
-        chairTemplate.addListMySQL(chairTemplate.findAllOracle());
-        disciplineTemplate.addListMySQL(disciplineTemplate.findAllOracle());
-        streamTemplate.addListMySQL(streamTemplate.findAllOracle());
-        typeOfAuditoriumTemplate.addListMySQL(typeOfAuditoriumTemplate.findAllOracle());
-        lecturerTemplate.addListMySQL(lecturerTemplate.findAllOracle());
-        kindOfWorkTemplate.addListMySQL(kindOfWorkTemplate.findAllOracle());
-        */
         /**
          * 1 lvl
+         */
+        groupDAO.addListMySQL(groupDAO.findAllOracle());
+        subGroupDAO.addListMySQL(subGroupDAO.findAllOracle());
+        auditoriumDAO.addListMySQL(auditoriumDAO.findAllOracle());
 
-        groupTemplate.addListMySQL(groupTemplate.findAllOracle());
-        subGroupTemplate.addListMySQL(subGroupTemplate.findAllOracle());
-        auditoriumTemplate.addListMySQL(auditoriumTemplate.findAllOracle());
-        */
         /**
          * 2 lvl
          */
