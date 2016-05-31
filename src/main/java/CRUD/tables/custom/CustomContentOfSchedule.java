@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 
 public class CustomContentOfSchedule {
     private int OID;
-    private Timestamp StartOn;
-    private Timestamp EndOn;
-    private Timestamp ModifiedTime;
+    private String StartOn;
+    private String EndOn;
+    private String ModifiedTime;
     private String DisciplineName;
     private String KindOfWorkName;
     private String LecturerFIO;
@@ -28,7 +28,7 @@ public class CustomContentOfSchedule {
         DisciplineName = disciplineName;
     }
 
-    public void setEndOn(Timestamp endOn) {
+    public void setEndOn(String endOn) {
         EndOn = endOn;
     }
 
@@ -40,7 +40,7 @@ public class CustomContentOfSchedule {
         LecturerFIO = lecturerFIO;
     }
 
-    public void setModifiedTime(Timestamp modifiedTime) {
+    public void setModifiedTime(String modifiedTime) {
         ModifiedTime = modifiedTime;
     }
 
@@ -48,7 +48,7 @@ public class CustomContentOfSchedule {
         this.OID = OID;
     }
 
-    public void setStartOn(Timestamp startOn) {
+    public void setStartOn(String startOn) {
         StartOn = startOn;
     }
 
@@ -72,15 +72,15 @@ public class CustomContentOfSchedule {
         return OID;
     }
 
-    public Timestamp getEndOn() {
+    public String getEndOn() {
         return EndOn;
     }
 
-    public Timestamp getModifiedTime() {
+    public String getModifiedTime() {
         return ModifiedTime;
     }
 
-    public Timestamp getStartOn() {
+    public String getStartOn() {
         return StartOn;
     }
 }

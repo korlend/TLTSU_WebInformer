@@ -1,5 +1,6 @@
 package CRUD;
 
+import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.*;
 import CRUD.DAO.*;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -94,6 +95,14 @@ public class MainTemplateJDBC {
 
     public void findAllMySQL() {
         buildingDAO.findAllMySQL();
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQL(String group) {
+        return contentOfScheduleDAO.findAllMySQL(group);
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQL(String group, String startOn, String endOn) {
+        return contentOfScheduleDAO.findAllMySQL(group, startOn, endOn);
     }
 
     public List<ContentOfSchedule> ret() {

@@ -1,7 +1,6 @@
 package com;
 
 import CRUD.MainTemplateJDBC;
-import CRUD.StudentJDBCTemplate;
 
 /**
  * Created by Артем on 22.05.2016.

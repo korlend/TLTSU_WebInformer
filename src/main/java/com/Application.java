@@ -4,10 +4,6 @@ package com;
  * Created by ����� on 22.04.2016.
  */
 
-import CRUD.StudentJDBCTemplate;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -5,19 +5,14 @@ package com;
  */
 public class Greeting {
 
-    private long id;
     private String content;
 
-    public Greeting(long id, String content) {
-        this.id = id;
+    public Greeting(String content) {
         this.content = content;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getContent() {
         return content;
     }
+
 }

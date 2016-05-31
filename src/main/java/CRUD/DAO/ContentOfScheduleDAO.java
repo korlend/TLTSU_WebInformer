@@ -1,13 +1,18 @@
 package CRUD.DAO;
 
+import CRUD.mappers.custom.CustomContentOfScheduleMapper;
 import CRUD.mappers.standard.ContentOfScheduleMapper;
+import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.ContentOfSchedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.security.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Артем on 22.05.2016.
@@ -35,6 +40,49 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
 
     public List<ContentOfSchedule> findAllMySQL() {
         return this.jdbcTemplateObjectMySQL.query("select * from ContentOfSchedule", new ContentOfScheduleMapper());
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQL(String GroupOID) {
+        String sql = "select " +
+                "cos.OID," +
+                "cos.StartOn," +
+                "cos.EndOn," +
+                "cos.ModifiedTime," +
+                "dis.`Name` as Discipline," +
+                "kow.`Name` as KindOfWork," +
+                "lect.FIO as Lecturer," +
+                "aud.`Abbr` as Auditorium " +
+                "from contentofschedule cos " +
+                "inner join discipline dis on cos.`Discipline` = dis.`OID` " +
+                "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
+                "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
+                "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
+                "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
+                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%'));";
+        return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQL(String GroupOID, String StartOn, String EndOn) {
+        String sql = "select " +
+                "cos.OID," +
+                "cos.StartOn," +
+                "cos.EndOn," +
+                "cos.ModifiedTime," +
+                "dis.`Name` as Discipline," +
+                "kow.`Name` as KindOfWork," +
+                "lect.FIO as Lecturer," +
+                "aud.`Abbr` as Auditorium " +
+                "from contentofschedule cos " +
+                "inner join discipline dis on cos.`Discipline` = dis.`OID` " +
+                "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
+                "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
+                "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
+                "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
+                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%')) " +
+                "and StartOn > '" + StartOn+ "' " +
+                "and StartOn < '" + EndOn + "' " +
+                ";";
+        return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
     }
 
     public List<ContentOfSchedule> findAllOracle() {
