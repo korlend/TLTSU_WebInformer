@@ -1,4 +1,4 @@
-package com;
+package com.response.classes;
 
 import CRUD.MainTemplateJDBC;
 import CRUD.tables.standard.ContentOfSchedule;
@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class DataSelectOracle {
     public List<ContentOfSchedule> result;
+    private MainTemplateJDBC mainTemplateJDBC;
 
-    DataSelectOracle(MainTemplateJDBC mainTemplateJDBC) {
+    public DataSelectOracle(MainTemplateJDBC mainTemplateJDBC) {
         //mainTemplateJDBC.unknownFunction();
         //mainTemplateJDBC.findAllOracle();
-
         result = mainTemplateJDBC.ret();
     }
 

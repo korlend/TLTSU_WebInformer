@@ -42,7 +42,7 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectMySQL.query("select * from ContentOfSchedule", new ContentOfScheduleMapper());
     }
 
-    public List<CustomContentOfSchedule> findAllMySQL(String GroupOID) {
+    public List<CustomContentOfSchedule> findAllMySQL(String GroupName) {
         String sql = "select " +
                 "cos.OID," +
                 "cos.StartOn," +
@@ -57,13 +57,13 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
-                "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
-                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%')) " +
-                "or stream in (select OID from `stream` where `Name` like '%" + GroupOID + "%');";
+                "where GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
+                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupName + "%')) " +
+                "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%');";
         return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
     }
 
-    public List<CustomContentOfSchedule> findAllMySQL(String GroupOID, String StartOn, String EndOn) {
+    public List<CustomContentOfSchedule> findAllMySQL(String GroupName, String StartOn, String EndOn) {
         String sql = "select " +
                 "cos.OID," +
                 "cos.StartOn," +
@@ -78,9 +78,9 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
-                "where GroupOID = (select OID from `group` where `name` like '%" + GroupOID + "%' limit 1) " +
-                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupOID + "%')) " +
-                "or stream in (select OID from `stream` where `Name` like '%" + GroupOID + "%') " +
+                "where GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
+                "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupName + "%')) " +
+                "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%') " +
                 "and StartOn > '" + StartOn+ "' " +
                 "and StartOn < '" + EndOn + "' " +
                 ";";

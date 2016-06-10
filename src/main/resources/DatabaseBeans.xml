@@ -30,7 +30,7 @@
    </bean>
 
    <bean id="mainTemplateJDBC"
-         class="CRUD.MainTemplateJDBC" init-method="setTemplates">
+         class="CRUD.MainTemplateJDBC" init-method="initializeTemplates">
           <property name="dataSourceMySQL"  ref="dataSourceMySQL" />
           <property name="dataSourceOracle"  ref="dataSourceOracle" />
    </bean>

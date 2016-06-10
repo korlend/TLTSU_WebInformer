@@ -3,9 +3,12 @@ package CRUD;
 import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.*;
 import CRUD.DAO.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +50,7 @@ public class MainTemplateJDBC {
      */
     //private DataSource dataSourceMySQL;
     //private DataSource dataSourceOracle;
+
     private JdbcTemplate jdbcTemplateObjectMySQL;
     private JdbcTemplate jdbcTemplateObjectOracle;
 
@@ -60,7 +64,7 @@ public class MainTemplateJDBC {
         this.jdbcTemplateObjectOracle = new JdbcTemplate(dataSource);
     }
 
-    public void setTemplates() {
+    public void initializeTemplates() {
         /**
          * initialization of templates
          */
@@ -109,7 +113,13 @@ public class MainTemplateJDBC {
         return contentOfScheduleDAO.findAllOracle();
     }
 
-    public void collectData() {
+    public List<String> updateDatabase() {
+        List<String> updatedGroups = new ArrayList<>();
+        //нужно составить запрос, который выделяет все группы, потоки, подгруппы где произошли изменения по ModifiedTime
+        return updatedGroups;
+    }
+
+    public void simpleCollectData() {
         /**
          * 0 lvl
          */
@@ -138,8 +148,6 @@ public class MainTemplateJDBC {
      *
      */
     public void unknownFunction() {
-
-
 
     }
 

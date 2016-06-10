@@ -1,4 +1,4 @@
-package com;
+package com.response.classes;
 
 import CRUD.MainTemplateJDBC;
 
@@ -8,9 +8,9 @@ import CRUD.MainTemplateJDBC;
 public class DataCopy {
     public Boolean result;
 
-    DataCopy(MainTemplateJDBC mainTemplateJDBC) {
+    public DataCopy(MainTemplateJDBC mainTemplateJDBC) {
         //mainTemplateJDBC.unknownFunction();
-        mainTemplateJDBC.collectData();
+        //mainTemplateJDBC.simpleCollectData();
         result = true;
     }
 

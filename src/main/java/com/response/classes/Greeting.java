@@ -1,4 +1,4 @@
-package com;
+package com.response.classes;
 
 /**
  * Created by ����� on 22.04.2016.

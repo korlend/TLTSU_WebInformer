@@ -1,49 +1,40 @@
-package com;
+package com.controllers;
 
 /**
  * Created by Артем on 30.04.2016.
  */
-import java.util.concurrent.atomic.AtomicLong;
 
 import CRUD.MainTemplateJDBC;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import com.response.classes.DataCopy;
+import com.response.classes.DataSelectMySQL;
+import com.response.classes.DataSelectOracle;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 @RestController
-@EnableAutoConfiguration
-public class GreetingController {
+@RequestMapping("/Data")
+public class DataResponseController {
+    /**если добавить method=GET или POST то они странно работают, если нужен будет POST то создавай новый контроллер **/
+    /**if you need to add method=GET or POST, create new Controller for each RequestMapping **/
 
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
-    private ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    private ApplicationContext context = new ClassPathXmlApplicationContext("DatabaseBeans.xml");
     MainTemplateJDBC mainTemplateJDBC = (MainTemplateJDBC)context.getBean("mainTemplateJDBC");
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
-        //Thread.sleep(3000); // simulated delay
-        return new Greeting("Hello, " + message.getName() + "!");
-    }
-
-    @RequestMapping("/DataCopy")
+    @RequestMapping("/Copy")
     public DataCopy dataCopy() {
         return new DataCopy(mainTemplateJDBC);
     }
 
-    @RequestMapping("/DataSelectOracle")
-    public DataSelectOracle dataSelectOracle() {
+    @RequestMapping("/SelectOracle")
+    public DataSelectOracle dataSelectOracle(String data) {
         return new DataSelectOracle(mainTemplateJDBC);
     }
 
-    @RequestMapping("/DataSelectMySQL")
+    @RequestMapping("/SelectMySQL")
     public DataSelectMySQL dataSelectMySQL(@RequestParam(value="group", defaultValue="") String group,
                                            @RequestParam(value="starton", defaultValue="") String starton,
                                            @RequestParam(value="endon", defaultValue="") String endon) {
@@ -54,5 +45,6 @@ public class GreetingController {
             return new DataSelectMySQL(mainTemplateJDBC, group);
         }
         return new DataSelectMySQL(mainTemplateJDBC);
+
     }
 }
