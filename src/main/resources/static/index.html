@@ -16,14 +16,14 @@
 
         function connect() {
             console.log("started");
-            var socket = new SockJS(document.getElementById('url').value);
+            var socket = new SockJS("/hello");
             console.log(socket);
             stompClient = Stomp.over(socket);
             console.log(stompClient);
             stompClient.connect({}, function(frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/get', function(greeting){
+                stompClient.subscribe(document.getElementById('url').value, function(greeting){
                     showGreeting(JSON.parse(greeting.body).content);
                 });
             });

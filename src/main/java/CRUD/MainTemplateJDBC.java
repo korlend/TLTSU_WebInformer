@@ -1,6 +1,7 @@
 package CRUD;
 
 import CRUD.tables.custom.CustomContentOfSchedule;
+import CRUD.tables.custom.GroupMaxModTime;
 import CRUD.tables.standard.*;
 import CRUD.DAO.*;
 import org.springframework.context.ApplicationContext;
@@ -81,24 +82,14 @@ public class MainTemplateJDBC {
         contentOfScheduleDAO = new ContentOfScheduleDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
     }
 
-    public void findAllOracle() {
+    public List<String> getAllChangedGroups() {
+        List<String> groupsList = new ArrayList<>();
 
-        buildingDAO.findAllOracle();
-        chairDAO.findAllOracle();
-        disciplineDAO.findAllOracle();
-        streamDAO.findAllOracle();
-        typeOfAuditoriumDAO.findAllOracle();
-        lecturerDAO.findAllOracle();
-        kindOfWorkDAO.findAllOracle();
-        groupDAO.findAllOracle();
-        subGroupDAO.findAllOracle();
-        auditoriumDAO.findAllOracle();
-
-        contentOfScheduleDAO.findAllOracle();
+        return groupsList;
     }
 
-    public void findAllMySQL() {
-        buildingDAO.findAllMySQL();
+    public List<ContentOfSchedule> findAllMySQL() {
+        return contentOfScheduleDAO.findAllMySQL();
     }
 
     public List<CustomContentOfSchedule> findAllMySQL(String group) {
@@ -109,17 +100,58 @@ public class MainTemplateJDBC {
         return contentOfScheduleDAO.findAllMySQL(group, startOn, endOn);
     }
 
-    public List<ContentOfSchedule> ret() {
+    public List<ContentOfSchedule> findAllOracle() {
         return contentOfScheduleDAO.findAllOracle();
     }
 
     public List<String> updateDatabase() {
         List<String> updatedGroups = new ArrayList<>();
-        //нужно составить запрос, который выделяет все группы, потоки, подгруппы где произошли изменения по ModifiedTime
+        List<GroupMaxModTime> mysqlGroups = groupDAO.findAllGroupsMaxModTimeMySQL();
+        List<GroupMaxModTime> oracleGroups = groupDAO.findAllGroupsMaxModTimeOracle();
+        groupDAO.findAllOracle();
+        if (mysqlGroups.size() != oracleGroups.size()) {
+            System.out.println("очень плохо");
+            //возможно появилась новая группа, как в случае нового учебного года
+            //надо добавить недостающие группы и вернуть саму себя функцию
+            //return this.getAllChangedGroups();
+            return new ArrayList<>();//заглушка пока что
+        }
+        else
+        {
+            System.out.println("все в порядке");
+        }
+        for (int i = 0; i < mysqlGroups.size(); i++) {
+            GroupMaxModTime groupMySQL = mysqlGroups.get(i);
+            GroupMaxModTime groupOracle = oracleGroups.get(i);
+
+            if (!groupMySQL.equals(groupOracle)) {
+                if (!groupMySQL.getGroupName().equals(groupOracle.getGroupName())) {
+                    //надо добавить недостающие группы и вернуть саму себя функцию
+                    //return this.getAllChangedGroups();
+                    return new ArrayList<>();//заглушка пока что
+                }
+                if (!groupMySQL.getMaxModTime().equals(groupOracle.getMaxModTime())) {
+                    //оставляем эту группу, в ее расписании что-то поменялось
+                    //добавляем ее в возвращаемый список измененных групп
+                    updatedGroups.add(groupMySQL.getGroupName());
+                }
+            }
+            else {
+                mysqlGroups.remove(i);
+                oracleGroups.remove(i);
+                i--;
+            }
+        }
         return updatedGroups;
     }
 
     public void simpleCollectData() {
+
+        /**
+         * этот метод просто копирует таблицы из oracle в mysql
+         * соблюден порядок формирования внешних ключей
+         * первыми создаются таблицы, где не используются ключи и т.д.
+         */
         /**
          * 0 lvl
          */
@@ -152,4 +184,47 @@ public class MainTemplateJDBC {
     }
 
 
+    public AuditoriumDAO getAuditoriumDAO() {
+        return auditoriumDAO;
+    }
+
+    public BuildingDAO getBuildingDAO() {
+        return buildingDAO;
+    }
+
+    public ChairDAO getChairDAO() {
+        return chairDAO;
+    }
+
+    public ContentOfScheduleDAO getContentOfScheduleDAO() {
+        return contentOfScheduleDAO;
+    }
+
+    public DisciplineDAO getDisciplineDAO() {
+        return disciplineDAO;
+    }
+
+    public GroupDAO getGroupDAO() {
+        return groupDAO;
+    }
+
+    public KindOfWorkDAO getKindOfWorkDAO() {
+        return kindOfWorkDAO;
+    }
+
+    public LecturerDAO getLecturerDAO() {
+        return lecturerDAO;
+    }
+
+    public StreamDAO getStreamDAO() {
+        return streamDAO;
+    }
+
+    public SubGroupDAO getSubGroupDAO() {
+        return subGroupDAO;
+    }
+
+    public TypeOfAuditoriumDAO getTypeOfAuditoriumDAO() {
+        return typeOfAuditoriumDAO;
+    }
 }

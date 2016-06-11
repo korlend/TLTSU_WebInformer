@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.security.Timestamp;
-import java.util.HashMap;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +36,24 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
     public void setDataSourceOracle(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplateObjectOracle = jdbcTemplate;
         this.jdbcInsertOracle = new SimpleJdbcInsert(jdbcTemplate).withTableName("ContentOfSchedule");
+    }
+
+    public Timestamp getMaxModifiedTimeByGroupMySQL(String GroupName) {
+        String sql = "SELECT max(ModifiedTime) from contentofschedule\n" +
+                "where GroupOID = (select OID from `group` where `name` like '%"+GroupName+"%' limit 1)" +
+                "or subgroup in (select OID from `subgroup` where `GroupOID` " +
+                "in (select OID from `group` where `name` like '%"+GroupName+"%'))" +
+                "or stream in (select OID from `stream` where `Name` like '%"+ GroupName +"%')";
+        return jdbcTemplateObjectMySQL.queryForObject(sql, Timestamp.class);
+    }
+
+    public Timestamp getMaxModifiedTimeByGroupOracle(String GroupName) {
+        String sql = "SELECT max(ModifiedTime) from contentofschedule\n" +
+                "where GroupOID = (select \"OID\" from \"group\" where \"name\" like '%"+GroupName+"%' limit 1)" +
+                "or subgroup in (select \"OID\" from \"subgroup\" where `GroupOID` " +
+                "in (select \"OID\" from \"group\" where \"name\" like '%"+GroupName+"%'))" +
+                "or stream in (select \"OID\" from \"stream\" where \"Name\" like '%"+ GroupName +"%')";
+        return jdbcTemplateObjectOracle.queryForObject(sql, Timestamp.class);
     }
 
     public List<ContentOfSchedule> findAllMySQL() {

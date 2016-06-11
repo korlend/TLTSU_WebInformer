@@ -5,15 +5,15 @@ package com.controllers;
  */
 
 import CRUD.MainTemplateJDBC;
-import com.response.classes.DataCopy;
-import com.response.classes.DataSelectMySQL;
-import com.response.classes.DataSelectOracle;
+import CRUD.tables.custom.CustomContentOfSchedule;
+import CRUD.tables.standard.ContentOfSchedule;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/Data")
@@ -25,26 +25,38 @@ public class DataResponseController {
     MainTemplateJDBC mainTemplateJDBC = (MainTemplateJDBC)context.getBean("mainTemplateJDBC");
 
     @RequestMapping("/Copy")
-    public DataCopy dataCopy() {
-        return new DataCopy(mainTemplateJDBC);
+    public void dataCopy() {
+        //mainTemplateJDBC.unknownFunction();
+        //mainTemplateJDBC.simpleCollectData();
+        mainTemplateJDBC.updateDatabase();
+    }
+
+    @RequestMapping("/GetAllGroupsOracle")
+    public List<String> GetAllGroupsOracle() {
+        return mainTemplateJDBC.getGroupDAO().findAllGroupsOracle();
+    }
+
+    @RequestMapping("/GetAllGroupsMySQL")
+    public List<String> GetAllGroupsMySQL() {
+        return mainTemplateJDBC.getGroupDAO().findAllGroupsMySQL();
     }
 
     @RequestMapping("/SelectOracle")
-    public DataSelectOracle dataSelectOracle(String data) {
-        return new DataSelectOracle(mainTemplateJDBC);
+    public List<ContentOfSchedule> dataSelectOracle() {
+        return mainTemplateJDBC.findAllOracle();
     }
 
     @RequestMapping("/SelectMySQL")
-    public DataSelectMySQL dataSelectMySQL(@RequestParam(value="group", defaultValue="") String group,
+    public List<CustomContentOfSchedule> dataSelectMySQL(@RequestParam(value="group", defaultValue="") String group,
                                            @RequestParam(value="starton", defaultValue="") String starton,
                                            @RequestParam(value="endon", defaultValue="") String endon) {
         if (!group.isEmpty()) {
             if (!starton.isEmpty() && !endon.isEmpty()) {
-                return new DataSelectMySQL(mainTemplateJDBC, group, starton, endon);
+                return mainTemplateJDBC.findAllMySQL(group, starton, endon);
             }
-            return new DataSelectMySQL(mainTemplateJDBC, group);
+            return mainTemplateJDBC.findAllMySQL(group);
         }
-        return new DataSelectMySQL(mainTemplateJDBC);
+        return mainTemplateJDBC.findAllMySQL("");
 
     }
 }
