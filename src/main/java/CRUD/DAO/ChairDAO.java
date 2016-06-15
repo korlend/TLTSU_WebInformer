@@ -41,6 +41,10 @@ public class ChairDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"Chair\"", new ChairMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM chair WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Chair> list) {
         for (Chair entry : list) {
             this.addRowMySQL(entry);

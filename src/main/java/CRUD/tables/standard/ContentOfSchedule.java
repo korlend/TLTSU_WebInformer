@@ -20,6 +20,43 @@ public class ContentOfSchedule implements Table {
     private int Group;
     private int SubGroup;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContentOfSchedule)) return false;
+
+        ContentOfSchedule that = (ContentOfSchedule) o;
+
+        if (getOID() != that.getOID()) return false;
+        if (getDiscipline() != that.getDiscipline()) return false;
+        if (getKindOfWork() != that.getKindOfWork()) return false;
+        if (getLecturer() != that.getLecturer()) return false;
+        if (getAuditorium() != that.getAuditorium()) return false;
+        if (getStream() != that.getStream()) return false;
+        if (getGroup() != that.getGroup()) return false;
+        if (getSubGroup() != that.getSubGroup()) return false;
+        if (getStartOn() != null ? !getStartOn().equals(that.getStartOn()) : that.getStartOn() != null) return false;
+        if (getEndOn() != null ? !getEndOn().equals(that.getEndOn()) : that.getEndOn() != null) return false;
+        return !(getModifiedTime() != null ? !getModifiedTime().equals(that.getModifiedTime()) : that.getModifiedTime() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + (getStartOn() != null ? getStartOn().hashCode() : 0);
+        result = 31 * result + (getEndOn() != null ? getEndOn().hashCode() : 0);
+        result = 31 * result + (getModifiedTime() != null ? getModifiedTime().hashCode() : 0);
+        result = 31 * result + getDiscipline();
+        result = 31 * result + getKindOfWork();
+        result = 31 * result + getLecturer();
+        result = 31 * result + getAuditorium();
+        result = 31 * result + getStream();
+        result = 31 * result + getGroup();
+        result = 31 * result + getSubGroup();
+        return result;
+    }
+
     public void setAuditorium(int auditorium) {
         Auditorium = auditorium;
     }

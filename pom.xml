@@ -40,6 +40,7 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <version>${version-spring-boot}</version>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

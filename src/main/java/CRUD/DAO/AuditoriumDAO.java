@@ -41,6 +41,10 @@ public class AuditoriumDAO {
         return this.jdbcTemplateObjectOracle.query("select * from \"Auditorium\"", new AuditoriumMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM auditorium WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Auditorium> list) {
         for (Auditorium entry : list) {
             this.addRowMySQL(entry);

@@ -20,6 +20,41 @@ public class CustomContentOfSchedule {
     private String LecturerFIO;
     private String AuditoriumAbbr;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CustomContentOfSchedule)) return false;
+
+        CustomContentOfSchedule that = (CustomContentOfSchedule) o;
+
+        if (getOID() != that.getOID()) return false;
+        if (getStartOn() != null ? !getStartOn().equals(that.getStartOn()) : that.getStartOn() != null) return false;
+        if (getEndOn() != null ? !getEndOn().equals(that.getEndOn()) : that.getEndOn() != null) return false;
+        if (getModifiedTime() != null ? !getModifiedTime().equals(that.getModifiedTime()) : that.getModifiedTime() != null)
+            return false;
+        if (getDisciplineName() != null ? !getDisciplineName().equals(that.getDisciplineName()) : that.getDisciplineName() != null)
+            return false;
+        if (getKindOfWorkName() != null ? !getKindOfWorkName().equals(that.getKindOfWorkName()) : that.getKindOfWorkName() != null)
+            return false;
+        if (getLecturerFIO() != null ? !getLecturerFIO().equals(that.getLecturerFIO()) : that.getLecturerFIO() != null)
+            return false;
+        return !(getAuditoriumAbbr() != null ? !getAuditoriumAbbr().equals(that.getAuditoriumAbbr()) : that.getAuditoriumAbbr() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + (getStartOn() != null ? getStartOn().hashCode() : 0);
+        result = 31 * result + (getEndOn() != null ? getEndOn().hashCode() : 0);
+        result = 31 * result + (getModifiedTime() != null ? getModifiedTime().hashCode() : 0);
+        result = 31 * result + (getDisciplineName() != null ? getDisciplineName().hashCode() : 0);
+        result = 31 * result + (getKindOfWorkName() != null ? getKindOfWorkName().hashCode() : 0);
+        result = 31 * result + (getLecturerFIO() != null ? getLecturerFIO().hashCode() : 0);
+        result = 31 * result + (getAuditoriumAbbr() != null ? getAuditoriumAbbr().hashCode() : 0);
+        return result;
+    }
+
     public void setAuditoriumAbbr(String auditoriumAbbr) {
         AuditoriumAbbr = auditoriumAbbr;
     }

@@ -2,21 +2,19 @@ package com.response.classes;
 
 public class HelloMessage {
 
-    private String name;
+    private String group;
     private String id;
 
-    public void setName(String name) {
-        System.out.println(name + " - я вывель");
-        this.name = name;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public void setId(String id) {
-        System.out.println(id + " - я вывель");
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getGroup() {
+        return group;
     }
 
     public String getId() {

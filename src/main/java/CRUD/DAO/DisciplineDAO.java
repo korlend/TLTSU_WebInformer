@@ -41,6 +41,10 @@ public class DisciplineDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"Discipline\"", new DisciplineMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM discipline WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Discipline> list) {
         for (Discipline entry : list) {
             this.addRowMySQL(entry);

@@ -41,6 +41,10 @@ public class SubGroupDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select \"OID\", \"Group\" as GroupOID from \"SubGroup\"", new SubGroupMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM SubGroup WHERE OID > 0");
+    }
+
     public void addListMySQL(List<SubGroup> list) {
         for (SubGroup entry : list) {
             this.addRowMySQL(entry);

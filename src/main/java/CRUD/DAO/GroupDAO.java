@@ -87,6 +87,10 @@ public class GroupDAO extends JdbcTemplate {
                 new GroupNamesMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM `group` WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Group> list) {
         for (Group entry : list) {
             this.addRowMySQL(entry);

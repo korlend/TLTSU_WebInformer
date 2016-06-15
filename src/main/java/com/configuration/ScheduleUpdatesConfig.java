@@ -1,6 +1,7 @@
 package com.configuration;
 
 import CRUD.MainTemplateJDBC;
+import CRUD.tables.custom.ConnectedUsers;
 import com.response.classes.Greeting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,13 +36,15 @@ public class ScheduleUpdatesConfig {
         }
     }
 
-    /**
-     * просто для тестирования
-     */
-    @Scheduled(fixedRate = 10000)
+    /*
+     * для тестирования
+    */
+    @Scheduled(fixedRate = 30000, initialDelay = 5000)
     public void update() {
-        //simpMessagingTemplate.convertAndSend("/topic/" + "1", new Greeting("t-pain1"));
-        //mainTemplateJDBC.updateDatabase();
-        //System.out.println("updated");
+        for (ConnectedUsers entry : mainTemplateJDBC.getConnectedUsersDAO().findAllMySQL()) {
+            simpMessagingTemplate.convertAndSend("/topic/" + entry.getDevice_id(),
+                    new Greeting(entry.getPreferred_groups().toString()));
+        }
     }
+
 }

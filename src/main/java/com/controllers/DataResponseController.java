@@ -7,11 +7,13 @@ package com.controllers;
 import CRUD.MainTemplateJDBC;
 import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.ContentOfSchedule;
+import org.springframework.boot.json.JsonSimpleJsonParser;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import spring.json.SimpleJsonParser;
 
 import java.util.List;
 
@@ -26,6 +28,13 @@ public class DataResponseController {
 
     @RequestMapping("/Copy")
     public void dataCopy() {
+        //mainTemplateJDBC.unknownFunction();
+        //mainTemplateJDBC.simpleCollectData();
+        //mainTemplateJDBC.updateDatabase();
+    }
+
+    @RequestMapping("/Test")
+    public void createConnectedUser() {
         //mainTemplateJDBC.unknownFunction();
         //mainTemplateJDBC.simpleCollectData();
         mainTemplateJDBC.updateDatabase();

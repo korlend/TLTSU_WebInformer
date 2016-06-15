@@ -41,6 +41,10 @@ public class TypeOfAuditoriumDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"TypeOfAuditorium\"", new TypeOfAuditoriumMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM TypeOfAuditorium WHERE OID > 0");
+    }
+
     public void addListMySQL(List<TypeOfAuditorium> list) {
         for (TypeOfAuditorium entry : list) {
             this.addRowMySQL(entry);

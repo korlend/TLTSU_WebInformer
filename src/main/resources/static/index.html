@@ -16,15 +16,15 @@
 
         function connect() {
             console.log("started");
-            var socket = new SockJS("/hello");
+            var socket = new SockJS(document.getElementById('url').value);
             console.log(socket);
             stompClient = Stomp.over(socket);
             console.log(stompClient);
             stompClient.connect({}, function(frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe(document.getElementById('url').value, function(greeting){
-                    showGreeting(JSON.parse(greeting.body).content);
+                stompClient.subscribe('/topic/'+document.getElementById('msg').value, function(greeting){
+                    showGreeting(greeting.body.toString());
                 });
             });
         }
@@ -37,9 +37,14 @@
             console.log("Disconnected");
         }
 
-        function sendName() {
-            var name = document.getElementById('name').value;
-            stompClient.send("/app/hello", {}, JSON.stringify({ 'name': name }));
+        function sendGroup() {
+            var group = document.getElementById('group').value;
+            stompClient.send("/app/hello", {},
+                    JSON.stringify({
+                        'group': group,
+                        'id':document.getElementById('msg').value
+                    }));
+            console.log(JSON.stringify({ 'group': group }));
         }
 
         function showGreeting(message) {
@@ -56,13 +61,14 @@
     Javascript and reload this page!</h2></noscript>
 <div>
     <div>
+        <input type="text" id="msg"/><br>
         <input type="text" id="url"/>
         <button id="connect" onclick="connect();">Connect</button>
         <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
     </div>
     <div id="conversationDiv">
-        <label>What is your name?</label><input type="text" id="name" />
-        <button id="sendName" onclick="sendName();">Send</button>
+        <label>Add group</label><input type="text" id="group" />
+        <button id="sendGroup" onclick="sendGroup();">Send</button>
         <p id="response"></p>
     </div>
 </div>

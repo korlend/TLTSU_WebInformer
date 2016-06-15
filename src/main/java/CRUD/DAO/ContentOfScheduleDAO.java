@@ -119,6 +119,10 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "\"SubGroup\" from \"ContentOfSchedule\"", new ContentOfScheduleMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM contentofschedule WHERE OID > 0");
+    }
+
     public void addListMySQL(List<ContentOfSchedule> list) {
         for (ContentOfSchedule entry : list) {
             this.addRowMySQL(entry);

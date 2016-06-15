@@ -41,6 +41,10 @@ public class StreamDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"Stream\"", new StreamMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM Stream WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Stream> list) {
         for (Stream entry : list) {
             this.addRowMySQL(entry);

@@ -41,6 +41,10 @@ public class BuildingDAO {
         return this.jdbcTemplateObjectOracle.query("select * from \"Building\"", new BuildingMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM building WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Building> list) {
         for (Building entry : list) {
             this.addRowMySQL(entry);

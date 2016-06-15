@@ -41,6 +41,10 @@ public class LecturerDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"Lecturer\"", new LecturerMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM Lecturer WHERE OID > 0");
+    }
+
     public void addListMySQL(List<Lecturer> list) {
         for (Lecturer entry : list) {
             this.addRowMySQL(entry);

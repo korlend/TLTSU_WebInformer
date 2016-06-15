@@ -13,6 +13,31 @@ public class Auditorium implements Table {
     private int Building;
     private int TypeOfAuditorium;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Auditorium)) return false;
+
+        Auditorium that = (Auditorium) o;
+
+        if (getOID() != that.getOID()) return false;
+        if (getBuilding() != that.getBuilding()) return false;
+        if (getTypeOfAuditorium() != that.getTypeOfAuditorium()) return false;
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+        return !(getAbbr() != null ? !getAbbr().equals(that.getAbbr()) : that.getAbbr() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getAbbr() != null ? getAbbr().hashCode() : 0);
+        result = 31 * result + getBuilding();
+        result = 31 * result + getTypeOfAuditorium();
+        return result;
+    }
+
     public void setAbbr(String abbr) {
         Abbr = abbr;
     }

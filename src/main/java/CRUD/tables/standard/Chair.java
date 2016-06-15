@@ -33,4 +33,25 @@ public class Chair implements Table {
     public String getName() {
         return Name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Chair)) return false;
+
+        Chair chair = (Chair) o;
+
+        if (getOID() != chair.getOID()) return false;
+        if (getAuditorium() != chair.getAuditorium()) return false;
+        return !(getName() != null ? !getName().equals(chair.getName()) : chair.getName() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + getAuditorium();
+        return result;
+    }
 }

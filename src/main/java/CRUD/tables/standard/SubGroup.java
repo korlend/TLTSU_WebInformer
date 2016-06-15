@@ -21,6 +21,25 @@ public class SubGroup implements Table {
         return Group;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SubGroup)) return false;
+
+        SubGroup subGroup = (SubGroup) o;
+
+        if (getOID() != subGroup.getOID()) return false;
+        return getGroup() == subGroup.getGroup();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + getGroup();
+        return result;
+    }
+
     public int getOID() {
         return OID;
     }

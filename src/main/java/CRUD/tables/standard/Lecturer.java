@@ -10,6 +10,27 @@ public class Lecturer implements Table {
     private String FIO;
     private int Chair;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Lecturer)) return false;
+
+        Lecturer lecturer = (Lecturer) o;
+
+        if (getOID() != lecturer.getOID()) return false;
+        if (getChair() != lecturer.getChair()) return false;
+        return !(getFIO() != null ? !getFIO().equals(lecturer.getFIO()) : lecturer.getFIO() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getOID();
+        result = 31 * result + (getFIO() != null ? getFIO().hashCode() : 0);
+        result = 31 * result + getChair();
+        return result;
+    }
+
     public void setChair(int chair) {
         Chair = chair;
     }

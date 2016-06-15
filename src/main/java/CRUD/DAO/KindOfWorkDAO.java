@@ -41,6 +41,10 @@ public class KindOfWorkDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"KindOfWork\"", new KindOfWorkMapper());
     }
 
+    public void deleteAllMySQL() {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM kindofwork WHERE OID > 0");
+    }
+
     public void addListMySQL(List<KindOfWork> list) {
         for (KindOfWork entry : list) {
             this.addRowMySQL(entry);
