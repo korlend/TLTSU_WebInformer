@@ -2,13 +2,26 @@ package CRUD.tables.standard;
 
 import CRUD.tables.Table;
 
+import java.util.Comparator;
+
 /**
  * Created by Артем on 14.05.2016.
  */
-public class Lecturer implements Table {
+public class Lecturer implements Comparator, Comparable, Table {
     private int OID;
     private String FIO;
     private int Chair;
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        return ((Lecturer) o1).getOID() < ((Lecturer) o2).getOID() ? -1 :
+                ((Lecturer) o1).getOID() > ((Lecturer) o2).getOID() ? 1 : 0;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.compare(this, o);
+    }
 
     @Override
     public boolean equals(Object o) {

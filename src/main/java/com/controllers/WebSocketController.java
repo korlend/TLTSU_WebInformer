@@ -28,12 +28,4 @@ public class WebSocketController {
                 helloMessage.getGroup());
         return helloMessage;
     }
-    /*
-    @MessageMapping("/hello/{groupName}/{deviceId}")
-    @SendTo("/topic/{groupName}/{deviceId}")
-    public Greeting greeting(@DestinationVariable String groupName, @DestinationVariable String deviceId) throws Exception {
-        // TODO добавить в бд айди пользователя и группу нужную ему
-        return new Greeting(groupName + " " + deviceId);
-    }
-    */
 }

@@ -35,11 +35,13 @@ public class GroupMaxModTime {
         return maxModTime;
     }
 
-    public void setGroupName(String groupName) {
+    public GroupMaxModTime setGroupName(String groupName) {
         this.groupName = groupName;
+        return this;
     }
 
-    public void setMaxModTime(String maxModTime) {
+    public GroupMaxModTime setMaxModTime(String maxModTime) {
         this.maxModTime = maxModTime;
+        return this;
     }
 }

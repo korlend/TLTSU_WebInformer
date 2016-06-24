@@ -1,17 +1,16 @@
 package CRUD;
 
+import CRUD.tables.Table;
 import CRUD.tables.custom.ConnectedUsers;
 import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.custom.GroupMaxModTime;
 import CRUD.tables.standard.*;
 import CRUD.DAO.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Артем on 04.05.2016.
@@ -132,40 +131,37 @@ public class MainTemplateJDBC {
         List<String> updatedGroups = new ArrayList<>();
         List<GroupMaxModTime> mysqlGroups = groupDAO.findAllGroupsMaxModTimeMySQL();
         List<GroupMaxModTime> oracleGroups = groupDAO.findAllGroupsMaxModTimeOracle();
-        groupDAO.findAllOracle();
-        /*
+        System.out.println("mapping mysql");
+        Map<String, String> mapMysql = this.getMaxTimeSchedGroupsChangeMysql();
+        System.out.println("mapping oracle");
+        Map<String, String> mapOracle = this.getMaxTimeSchedGroupsChangeOracle();
+
         if (mysqlGroups.size() != oracleGroups.size()) {
             updateAllExceptSchedule();
             return this.updateDatabase();
         }
-        */
+        System.out.println("hi");
         for (int i = 0; i < mysqlGroups.size(); i++) {
-            GroupMaxModTime groupMySQL = mysqlGroups.get(i);
-            GroupMaxModTime groupOracle = oracleGroups.get(i);
-            System.out.println("M: "+groupMySQL.getGroupName() + ": " + groupMySQL.getMaxModTime());
-            System.out.println("O: "+groupOracle.getGroupName() + ": " + groupOracle.getMaxModTime());
-            /*
-            if (!groupMySQL.equals(groupOracle)) {
-                if (!groupMySQL.getGroupName().equals(groupOracle.getGroupName())) {
-                    //updateAllExceptSchedule();
-                    //return this.updateDatabase();
-                    return updatedGroups;
-                }
-                if (!groupMySQL.getMaxModTime().equals(groupOracle.getMaxModTime())) {
-                    updatedGroups.add(groupMySQL.getGroupName());
-                }
+            String currentGroup = mysqlGroups.get(i).getGroupName();
+            String maxModTimeMysql = mapMysql.get(currentGroup);
+            String maxModTimeOracle = mapOracle.get(currentGroup);
+            //System.out.println("M: "+groupMySQL.getGroupName() + ": " + groupMySQL.getMaxModTime());
+            //System.out.println("O: "+groupOracle.getGroupName() + ": " + groupOracle.getMaxModTime());
+            if (maxModTimeMysql.equals("null") || maxModTimeOracle.equals("null")) {
+                System.out.println(mysqlGroups + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
             }
-            else {
-                mysqlGroups.remove(i);
-                oracleGroups.remove(i);
-                i--;
+            if (!maxModTimeMysql.equals(maxModTimeOracle)) {
+                System.out.println(mysqlGroups + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
+                updatedGroups.add(currentGroup);
             }
-            */
+            mapMysql.remove(currentGroup);
+            mapOracle.remove(currentGroup);
         }
         if (!updatedGroups.isEmpty()) {
+            //если есть группа измененная надо добавить изменения в mysql
             //contentOfScheduleDAO.deleteAllMySQL();
             //contentOfScheduleDAO.addListMySQL(contentOfScheduleDAO.findAllOracle());
-        }
+        } else {System.out.println("нет различий");}
         return updatedGroups;
     }
 
@@ -248,6 +244,79 @@ public class MainTemplateJDBC {
         return dataContentOfSchedule;
     }
 
+    public void fullDatabaseCheck() {
+        GregorianCalendar time = new GregorianCalendar();
+        /*
+        if (!equalLists(auditoriumDAO.findAllMySQL(), auditoriumDAO.findAllOracle()))
+            System.out.println("auditorium");
+        if (!equalLists(chairDAO.findAllMySQL(), chairDAO.findAllOracle()))
+            System.out.println("chair");
+        if (!equalLists(buildingDAO.findAllMySQL(), buildingDAO.findAllOracle())) {
+            System.out.println("building");
+        }
+        if (!equalLists(contentOfScheduleDAO.findAllMySQL(), contentOfScheduleDAO.findAllOracle()))
+            System.out.println("content of schedule");
+        if (!equalLists(disciplineDAO.findAllMySQL(), disciplineDAO.findAllOracle()))
+            System.out.println("discipline");
+        if (!equalLists(groupDAO.findAllMySQL(), groupDAO.findAllOracle()))
+            System.out.println("group");
+        if (!equalLists(kindOfWorkDAO.findAllMySQL(), kindOfWorkDAO.findAllOracle()))
+            System.out.println("kind of work");
+        if (!equalLists(lecturerDAO.findAllMySQL(), lecturerDAO.findAllOracle()))
+            System.out.println("lecturer");
+        if (!equalLists(streamDAO.findAllMySQL(), streamDAO.findAllOracle()))
+            System.out.println("stream");
+        if (!equalLists(subGroupDAO.findAllMySQL(), subGroupDAO.findAllOracle()))
+            System.out.println("sub group");
+        if (!equalLists(typeOfAuditoriumDAO.findAllMySQL(), typeOfAuditoriumDAO.findAllOracle()))
+            System.out.println("type of auditorium");
+            */
+        System.out.println(new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis());
+    }
+
+    public void simpleDeleteAllMySQL() {
+        /**
+         * удаляет все данные из таблиц в правильном порядке
+         */
+
+        /** 2 lvl **/
+        contentOfScheduleDAO.deleteAllMySQL();
+
+        /** 1 lvl **/
+        auditoriumDAO.deleteAllMySQL();
+        subGroupDAO.deleteAllMySQL();
+        groupDAO.deleteAllMySQL();
+
+        /** 0 lvl **/
+        kindOfWorkDAO.deleteAllMySQL();
+        lecturerDAO.deleteAllMySQL();
+        typeOfAuditoriumDAO.deleteAllMySQL();
+        streamDAO.deleteAllMySQL();
+        disciplineDAO.deleteAllMySQL();
+        chairDAO.deleteAllMySQL();
+        buildingDAO.deleteAllMySQL();
+    }
+
+    private Map<String, String> getMaxTimeSchedGroupsChangeMysql() {
+        return groupDAO.findAllGroupsMySQL().stream().collect(
+                Collectors.toMap(
+                        g -> g,
+                        t -> contentOfScheduleDAO.getMaxModifiedTimeByGroupMySQL(t) == null ?
+                            "null":
+                            contentOfScheduleDAO.getMaxModifiedTimeByGroupMySQL(t).toString()
+                ));
+    }
+
+    private Map<String, String> getMaxTimeSchedGroupsChangeOracle() {
+        return groupDAO.findAllGroupsOracle().stream().collect(
+                Collectors.toMap(
+                        g -> g,
+                        t -> contentOfScheduleDAO.getMaxModifiedTimeByGroupOracle(t) == null ?
+                                "null":
+                                contentOfScheduleDAO.getMaxModifiedTimeByGroupOracle(t).toString()
+                ));
+    }
+
     public AuditoriumDAO getAuditoriumDAO() {
         return auditoriumDAO;
     }
@@ -293,4 +362,33 @@ public class MainTemplateJDBC {
     }
 
     public ConnectedUsersDAO getConnectedUsersDAO() { return connectedUsersDAO;}
+
+    public static <T extends Table & Comparable<? super T>> List<Table> equalLists (List<T> mysql, List<T> oracle) {
+        if (mysql == null && oracle == null){
+            return new ArrayList<>();
+        }
+        if (mysql == null)
+            return new ArrayList<>(oracle);
+        if (oracle == null)
+            return new ArrayList<>();
+        if (mysql.size() != oracle.size()){
+            //find all not existing and not equal
+            //and return ArrayList
+        }
+
+
+
+        Collections.sort(mysql);
+        Collections.sort(oracle);
+        if (!mysql.equals(oracle))
+        {
+            System.out.println(mysql.getClass().toString());
+            for (int i = 0; i < mysql.size(); i++) {
+                if (!mysql.get(i).equals(oracle)) {
+                    System.out.println(((Table) mysql.get(i)).getOID());
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
 }

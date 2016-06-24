@@ -3,11 +3,12 @@ package CRUD.tables.standard;
 import CRUD.tables.Table;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 
 /**
  * Created by Артем on 14.05.2016.
  */
-public class ContentOfSchedule implements Table {
+public class ContentOfSchedule implements Comparator, Comparable, Table {
     private int OID;
     private Timestamp StartOn;
     private Timestamp EndOn;
@@ -19,6 +20,27 @@ public class ContentOfSchedule implements Table {
     private int Stream;
     private int Group;
     private int SubGroup;
+
+    public ContentOfSchedule() {
+        this.Discipline = 0;
+        this.KindOfWork = 0;
+        this.Lecturer = 0;
+        this.Auditorium = 0;
+        this.Stream = 0;
+        this.Group = 0;
+        this.SubGroup = 0;
+    }
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        return ((ContentOfSchedule) o1).getOID() < ((ContentOfSchedule) o2).getOID() ? -1 :
+                ((ContentOfSchedule) o1).getOID() > ((ContentOfSchedule) o2).getOID() ? 1 : 0;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.compare(this, o);
+    }
 
     @Override
     public boolean equals(Object o) {

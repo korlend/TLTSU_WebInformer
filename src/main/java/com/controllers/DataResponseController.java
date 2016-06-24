@@ -37,7 +37,10 @@ public class DataResponseController {
     public void createConnectedUser() {
         //mainTemplateJDBC.unknownFunction();
         //mainTemplateJDBC.simpleCollectData();
-        mainTemplateJDBC.updateDatabase();
+        //mainTemplateJDBC.updateDatabase();
+        //mainTemplateJDBC.simpleDeleteAllMySQL();
+        //mainTemplateJDBC.simpleCollectData();
+        mainTemplateJDBC.fullDatabaseCheck();
     }
 
     @RequestMapping("/GetAllGroupsOracle")

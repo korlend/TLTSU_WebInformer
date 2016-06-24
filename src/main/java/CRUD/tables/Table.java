@@ -15,4 +15,6 @@ public interface Table {
      described in classes.
 
      */
+
+    public int getOID();
 }

@@ -40,7 +40,7 @@ public class GroupDAO extends JdbcTemplate {
     }
 
     public List<Group> findAllMySQL() {
-        return this.jdbcTemplateObjectMySQL.query("select * from `Group`", new GroupMapper());
+        return this.jdbcTemplateObjectMySQL.query("select * from `group`", new GroupMapper());
     }
 
     public List<Group> findAllOracle() {
@@ -48,7 +48,7 @@ public class GroupDAO extends JdbcTemplate {
     }
 
     public List<String> findAllGroupsMySQL() {
-        return this.jdbcTemplateObjectMySQL.query("select `name` from Group", new RowMapper<String>() {
+        return this.jdbcTemplateObjectMySQL.query("select `name` from `group` group by `name`", new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getString("Name");
@@ -57,7 +57,7 @@ public class GroupDAO extends JdbcTemplate {
     }
 
     public List<String> findAllGroupsOracle() {
-        return this.jdbcTemplateObjectOracle.query("select \"name\" from \"Group\"", new RowMapper<String>() {
+        return this.jdbcTemplateObjectOracle.query("select \"Name\" from \"Group\" group by \"Name\"", new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getString("Name");
@@ -67,12 +67,27 @@ public class GroupDAO extends JdbcTemplate {
 
     public List<GroupMaxModTime> findAllGroupsMaxModTimeMySQL() {
         return this.jdbcTemplateObjectMySQL.query("SELECT " +
-                "max(c.ModifiedTime) as `MaxModifiedTime`, " +
-                "g.Name " +
-                "from contentofschedule c " +
-                "INNER JOIN `group` g ON g.OID = c.GroupOID " +
-                "group by g.Name " +
-                "order by g.Name",
+                        "max(c.ModifiedTime) as `MaxModifiedTime`, " +
+                        "g.`Name` " +
+                        "from contentofschedule c " +
+                        "INNER JOIN `group` g ON g.OID = c.GroupOID " +
+                        "group by g.`Name` ",
+                new GroupNamesMapper());
+    }
+
+    public List<GroupMaxModTime> findAllSubGroupsMMTMySQL() {
+        return this.jdbcTemplateObjectMySQL.query("select \n" +
+                        "max(c.ModifiedTime) as MaxModifiedTime, \n" +
+                        "cg.`Name`\n" +
+                        "from contentofschedule c\n" +
+                        "inner join\n" +
+                        "(SELECT\n" +
+                        "g.`Name`,\n" +
+                        "sg.OID\n" +
+                        "FROM subgroup sg\n" +
+                        "left join `group` g on sg.GroupOID = g.OID) cg\n" +
+                        "on c.SubGroup = cg.OID\n" +
+                        "group by cg.`Name`",
                 new GroupNamesMapper());
     }
 
@@ -82,8 +97,23 @@ public class GroupDAO extends JdbcTemplate {
                 "g.\"Name\" " +
                 "from \"ContentOfSchedule\" c " +
                 "INNER JOIN \"Group\" g ON g.\"OID\" = c.\"Group\" " +
-                "group by g.\"Name\" " +
-                "order by g.\"Name\"",
+                "group by g.\"Name\"",
+                new GroupNamesMapper());
+    }
+
+    public List<GroupMaxModTime> findAllSubGroupsMMTOracle() {
+        return this.jdbcTemplateObjectMySQL.query("select \n" +
+                        "MAX(c.\"ModifiedTime\") as \"MaxModifiedTime\", \n" +
+                        "cg.\"Name\" as \"Name\"\n" +
+                        "from \"ContentOfSchedule\" c\n" +
+                        "inner join\n" +
+                        "(SELECT\n" +
+                        "g.\"Name\",\n" +
+                        "sg.\"OID\"\n" +
+                        "FROM \"SubGroup\" sg\n" +
+                        "left join \"Group\" g on sg.\"Group\" = g.\"OID\") cg\n" +
+                        "on c.\"SubGroup\" = cg.\"OID\"\n" +
+                        "group by cg.\"Name\"",
                 new GroupNamesMapper());
     }
 

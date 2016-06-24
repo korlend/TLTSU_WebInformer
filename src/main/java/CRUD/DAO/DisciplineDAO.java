@@ -33,7 +33,7 @@ public class DisciplineDAO extends JdbcTemplate {
         this.jdbcInsertOracle = new SimpleJdbcInsert(jdbcTemplate).withTableName("Discipline");
     }
 
-    public List<Discipline> findAllmMySQL() {
+    public List<Discipline> findAllMySQL() {
         return this.jdbcTemplateObjectMySQL.query("select * from Discipline", new DisciplineMapper());
     }
 

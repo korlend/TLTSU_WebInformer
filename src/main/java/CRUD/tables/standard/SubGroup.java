@@ -2,10 +2,12 @@ package CRUD.tables.standard;
 
 import CRUD.tables.Table;
 
+import java.util.Comparator;
+
 /**
  * Created by Артем on 14.05.2016.
  */
-public class SubGroup implements Table {
+public class SubGroup implements Comparator, Comparable, Table {
     private int OID;
     private int Group;
 
@@ -19,6 +21,17 @@ public class SubGroup implements Table {
 
     public int getGroup() {
         return Group;
+    }
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        return ((SubGroup) o1).getOID() < ((SubGroup) o2).getOID() ? -1 :
+                ((SubGroup) o1).getOID() > ((SubGroup) o2).getOID() ? 1 : 0;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.compare(this, o);
     }
 
     @Override
