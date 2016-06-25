@@ -13,7 +13,7 @@ public class GroupNamesMapper implements RowMapper<GroupMaxModTime> {
     public GroupMaxModTime mapRow(ResultSet rs, int rowNum) throws SQLException {
         GroupMaxModTime groupMaxModTime = new GroupMaxModTime();
         groupMaxModTime.setGroupName(rs.getString("Name"));
-        groupMaxModTime.setMaxModTime(rs.getTimestamp("MaxModifiedTime").toString());
+        groupMaxModTime.setMaxModTime(rs.getTimestamp("MaxModifiedTime"));
         return groupMaxModTime;
     }
 }

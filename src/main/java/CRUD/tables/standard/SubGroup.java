@@ -53,6 +53,10 @@ public class SubGroup implements Comparator, Comparable, Table {
         return result;
     }
 
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
+
     public int getOID() {
         return OID;
     }

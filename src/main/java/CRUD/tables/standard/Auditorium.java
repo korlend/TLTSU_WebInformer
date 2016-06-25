@@ -89,4 +89,8 @@ public class Auditorium implements Comparator, Comparable, Table {
     public String getName() {
         return Name;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

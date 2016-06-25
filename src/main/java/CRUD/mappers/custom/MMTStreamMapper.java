@@ -15,12 +15,12 @@ public class MMTStreamMapper implements RowMapper<List<GroupMaxModTime>> {
     @Override
     public List<GroupMaxModTime> mapRow(ResultSet resultSet, int i) throws SQLException {
         List<GroupMaxModTime> list = new ArrayList<>();
-        for(String entry : resultSet.getString("Name").split(" "))
+        for(String entry : resultSet.getString("Name").split(" |,"))
         {
-            if (entry.indexOf(0) == '(') continue;
+            if (entry.contains("(")) continue;
             list.add(new GroupMaxModTime()
                     .setGroupName(entry)
-                    .setMaxModTime(resultSet.getString("MaxModifiedTime")));
+                    .setMaxModTime(resultSet.getTimestamp("MaxModifiedTime")));
         }
         return list;
     }

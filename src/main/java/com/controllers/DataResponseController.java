@@ -36,21 +36,20 @@ public class DataResponseController {
     @RequestMapping("/Test")
     public void createConnectedUser() {
         //mainTemplateJDBC.unknownFunction();
-        //mainTemplateJDBC.simpleCollectData();
-        //mainTemplateJDBC.updateDatabase();
+        mainTemplateJDBC.updateDatabase();
         //mainTemplateJDBC.simpleDeleteAllMySQL();
         //mainTemplateJDBC.simpleCollectData();
-        mainTemplateJDBC.fullDatabaseCheck();
+        //mainTemplateJDBC.fullDatabaseCheck();
     }
 
     @RequestMapping("/GetAllGroupsOracle")
     public List<String> GetAllGroupsOracle() {
-        return mainTemplateJDBC.getGroupDAO().findAllGroupsOracle();
+        return mainTemplateJDBC.getGroupDAO().findAllGroupNamesOracle();
     }
 
     @RequestMapping("/GetAllGroupsMySQL")
     public List<String> GetAllGroupsMySQL() {
-        return mainTemplateJDBC.getGroupDAO().findAllGroupsMySQL();
+        return mainTemplateJDBC.getGroupDAO().findAllGroupNamesMySQL();
     }
 
     @RequestMapping("/SelectOracle")

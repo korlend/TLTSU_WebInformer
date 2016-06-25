@@ -1,6 +1,7 @@
 package CRUD.DAO;
 
 import CRUD.mappers.custom.GroupNamesMapper;
+import CRUD.mappers.custom.MMTStreamMapper;
 import CRUD.mappers.standard.GroupMapper;
 import CRUD.tables.custom.GroupMaxModTime;
 import CRUD.tables.standard.Group;
@@ -12,8 +13,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by Артем on 22.05.2016.
@@ -47,7 +51,25 @@ public class GroupDAO extends JdbcTemplate {
         return this.jdbcTemplateObjectOracle.query("select * from \"Group\"", new GroupMapper());
     }
 
-    public List<String> findAllGroupsMySQL() {
+    public List<Integer> findAllGroupOIDMySQL() {
+        return this.jdbcTemplateObjectMySQL.query("select `OID` from `group`", new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("OID");
+            }
+        });
+    }
+
+    public List<Integer> findAllGroupOIDOracle() {
+        return this.jdbcTemplateObjectOracle.query("select \"OID\" from \"Group\"", new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getInt("OID");
+            }
+        });
+    }
+
+    public List<String> findAllGroupNamesMySQL() {
         return this.jdbcTemplateObjectMySQL.query("select `name` from `group` group by `name`", new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -56,7 +78,7 @@ public class GroupDAO extends JdbcTemplate {
         });
     }
 
-    public List<String> findAllGroupsOracle() {
+    public List<String> findAllGroupNamesOracle() {
         return this.jdbcTemplateObjectOracle.query("select \"Name\" from \"Group\" group by \"Name\"", new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -65,13 +87,23 @@ public class GroupDAO extends JdbcTemplate {
         });
     }
 
-    public List<GroupMaxModTime> findAllGroupsMaxModTimeMySQL() {
+    public List<GroupMaxModTime> findAllGroupsMMTMySQL() {
         return this.jdbcTemplateObjectMySQL.query("SELECT " +
                         "max(c.ModifiedTime) as `MaxModifiedTime`, " +
                         "g.`Name` " +
                         "from contentofschedule c " +
                         "INNER JOIN `group` g ON g.OID = c.GroupOID " +
                         "group by g.`Name` ",
+                new GroupNamesMapper());
+    }
+
+    public List<GroupMaxModTime> findAllGroupsMMTOracle() {
+        return this.jdbcTemplateObjectOracle.query("SELECT " +
+                        "MAX(c.\"ModifiedTime\") as \"MaxModifiedTime\", " +
+                        "g.\"Name\" " +
+                        "from \"ContentOfSchedule\" c " +
+                        "INNER JOIN \"Group\" g ON g.\"OID\" = c.\"Group\" " +
+                        "group by g.\"Name\"",
                 new GroupNamesMapper());
     }
 
@@ -91,18 +123,8 @@ public class GroupDAO extends JdbcTemplate {
                 new GroupNamesMapper());
     }
 
-    public List<GroupMaxModTime> findAllGroupsMaxModTimeOracle() {
-        return this.jdbcTemplateObjectOracle.query("SELECT " +
-                "MAX(c.\"ModifiedTime\") as \"MaxModifiedTime\", " +
-                "g.\"Name\" " +
-                "from \"ContentOfSchedule\" c " +
-                "INNER JOIN \"Group\" g ON g.\"OID\" = c.\"Group\" " +
-                "group by g.\"Name\"",
-                new GroupNamesMapper());
-    }
-
     public List<GroupMaxModTime> findAllSubGroupsMMTOracle() {
-        return this.jdbcTemplateObjectMySQL.query("select \n" +
+        return this.jdbcTemplateObjectOracle.query("select \n" +
                         "MAX(c.\"ModifiedTime\") as \"MaxModifiedTime\", \n" +
                         "cg.\"Name\" as \"Name\"\n" +
                         "from \"ContentOfSchedule\" c\n" +
@@ -115,6 +137,37 @@ public class GroupDAO extends JdbcTemplate {
                         "on c.\"SubGroup\" = cg.\"OID\"\n" +
                         "group by cg.\"Name\"",
                 new GroupNamesMapper());
+    }
+
+    public List<GroupMaxModTime> findAllStreamsMMTMySQL() {
+        List<GroupMaxModTime> list = new ArrayList<>();
+        this.jdbcTemplateObjectMySQL.query("select\n" +
+                        "  max(c.ModifiedTime) as MaxModifiedTime,\n" +
+                        "  s.`Name`,\n" +
+                        "  c.`Stream`\n" +
+                        "from contentofschedule c\n" +
+                        "inner join stream s on s.OID = c.Stream\n" +
+                        "  where s.`Name` not like '%Во%'\n" +
+                        "  and s.`Name` not like '%Фи%'\n" +
+                        "group by c.`Stream`,s.`Name`",
+                new MMTStreamMapper()).stream().forEach(l -> list.addAll(l));
+        return list;
+    }
+
+    public List<GroupMaxModTime> findAllStreamsMMTOracle() {
+        List<GroupMaxModTime> list = new ArrayList<>();
+        this.jdbcTemplateObjectOracle.query("select\n" +
+                        "max(c.\"ModifiedTime\") as \"MaxModifiedTime\",\n" +
+                        "s.\"Name\",\n" +
+                        "c.\"Stream\"\n" +
+                        "from \"ContentOfSchedule\" c\n" +
+                        "inner join\n" +
+                        "\"Stream\" s on s.\"OID\" = c.\"Stream\"\n" +
+                        "where s.\"Name\" not like '%Во%'\n" +
+                        "and s.\"Name\" not like '%Фи%'\n" +
+                        "group by c.\"Stream\", s.\"Name\"",
+                new MMTStreamMapper()).stream().forEach(l -> list.addAll(l));
+        return list;
     }
 
     public void deleteAllMySQL() {

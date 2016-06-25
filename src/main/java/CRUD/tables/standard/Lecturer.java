@@ -67,4 +67,8 @@ public class Lecturer implements Comparator, Comparable, Table {
     public String getFIO() {
         return FIO;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

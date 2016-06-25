@@ -166,4 +166,8 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
     public Timestamp getStartOn() {
         return StartOn;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

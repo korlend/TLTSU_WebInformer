@@ -67,4 +67,8 @@ public class Chair implements Comparator, Comparable, Table {
         result = 31 * result + getAuditorium();
         return result;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

@@ -9,6 +9,7 @@ import CRUD.DAO.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,29 +130,74 @@ public class MainTemplateJDBC {
 
     public List<String> updateDatabase() {
         List<String> updatedGroups = new ArrayList<>();
-        List<GroupMaxModTime> mysqlGroups = groupDAO.findAllGroupsMaxModTimeMySQL();
-        List<GroupMaxModTime> oracleGroups = groupDAO.findAllGroupsMaxModTimeOracle();
-        System.out.println("mapping mysql");
-        Map<String, String> mapMysql = this.getMaxTimeSchedGroupsChangeMysql();
-        System.out.println("mapping oracle");
-        Map<String, String> mapOracle = this.getMaxTimeSchedGroupsChangeOracle();
+        List<GroupMaxModTime> mysqlGroups = groupDAO.findAllGroupsMMTMySQL();
+        List<GroupMaxModTime> oracleGroups = groupDAO.findAllGroupsMMTOracle();
 
-        if (mysqlGroups.size() != oracleGroups.size()) {
+        GregorianCalendar time = new GregorianCalendar();
+        System.out.println("mapping mysql");
+        Map<String, Timestamp> mapMysql = groupDAO.findAllGroupsMMTMySQL().stream().collect(
+                Collectors.toMap(k -> k.getGroupName(), v -> v.getMaxModTime()));
+        groupDAO.findAllSubGroupsMMTMySQL().stream().collect(
+                Collectors.toMap(kk -> kk.getGroupName(), vv -> vv.getMaxModTime()))
+                .forEach((k, v) -> {
+                    if (mapMysql.containsKey(k)) {
+                        if (mapMysql.get(k).compareTo(v) == -1)
+                            mapMysql.put(k, v);
+                    }
+                    else mapMysql.put(k, v);
+                });
+
+        groupDAO.findAllStreamsMMTMySQL().stream()
+                .forEach((k) -> {
+                    if (mapMysql.containsKey(k.getGroupName())) {
+                        if (mapMysql.get(k.getGroupName()).compareTo(k.getMaxModTime()) == -1)
+                            mapMysql.put(k.getGroupName(), k.getMaxModTime());
+                    }
+                    else mapMysql.put(k.getGroupName(), k.getMaxModTime());
+                });
+
+        System.out.println("mysql ended: " + (new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis()));
+
+        time = new GregorianCalendar();
+        Map<String, Timestamp> mapOracle = groupDAO.findAllGroupsMMTOracle().stream().collect(
+                Collectors.toMap(k -> k.getGroupName(), v -> v.getMaxModTime()));
+        groupDAO.findAllSubGroupsMMTOracle().stream().collect(
+                Collectors.toMap(kk -> kk.getGroupName(), vv -> vv.getMaxModTime()))
+                .forEach((k, v) -> {
+                    if (mapOracle.containsKey(k)) {
+                        if (mapOracle.get(k).compareTo(v) == -1)
+                            mapOracle.put(k, v);
+                    }
+                    else mapOracle.put(k, v);
+                });
+
+        groupDAO.findAllStreamsMMTOracle().stream()
+                .forEach((k) -> {
+                    if (mapOracle.containsKey(k.getGroupName())) {
+                        if (mapOracle.get(k.getGroupName()).compareTo(k.getMaxModTime()) == -1)
+                            mapOracle.put(k.getGroupName(), k.getMaxModTime());
+                    }
+                    else mapOracle.put(k.getGroupName(), k.getMaxModTime());
+                });
+
+        /*if (mysqlGroups.size() != oracleGroups.size()) {
             updateAllExceptSchedule();
             return this.updateDatabase();
-        }
-        System.out.println("hi");
+        }*/
+        //equalLists(groupDAO.findAllStreamsMMTMySQL(),groupDAO.findAllStreamsMMTOracle());
+
+
+        System.out.println("oracle ended: " + (new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis()));
+        System.out.println(mapMysql.size() + " " + mapOracle.size());
+
         for (int i = 0; i < mysqlGroups.size(); i++) {
             String currentGroup = mysqlGroups.get(i).getGroupName();
-            String maxModTimeMysql = mapMysql.get(currentGroup);
-            String maxModTimeOracle = mapOracle.get(currentGroup);
+            Timestamp maxModTimeMysql = mapMysql.get(currentGroup);
+            Timestamp maxModTimeOracle = mapOracle.get(currentGroup);
             //System.out.println("M: "+groupMySQL.getGroupName() + ": " + groupMySQL.getMaxModTime());
             //System.out.println("O: "+groupOracle.getGroupName() + ": " + groupOracle.getMaxModTime());
-            if (maxModTimeMysql.equals("null") || maxModTimeOracle.equals("null")) {
-                System.out.println(mysqlGroups + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
-            }
-            if (!maxModTimeMysql.equals(maxModTimeOracle)) {
-                System.out.println(mysqlGroups + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
+            if (maxModTimeMysql != null && maxModTimeOracle != null && !maxModTimeMysql.equals(maxModTimeOracle)) {
+                System.out.println(currentGroup + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
                 updatedGroups.add(currentGroup);
             }
             mapMysql.remove(currentGroup);
@@ -161,6 +207,7 @@ public class MainTemplateJDBC {
             //если есть группа измененная надо добавить изменения в mysql
             //contentOfScheduleDAO.deleteAllMySQL();
             //contentOfScheduleDAO.addListMySQL(contentOfScheduleDAO.findAllOracle());
+
         } else {System.out.println("нет различий");}
         return updatedGroups;
     }
@@ -297,8 +344,8 @@ public class MainTemplateJDBC {
         buildingDAO.deleteAllMySQL();
     }
 
-    private Map<String, String> getMaxTimeSchedGroupsChangeMysql() {
-        return groupDAO.findAllGroupsMySQL().stream().collect(
+    private Map<Integer, String> getMaxTimeSchedGroupsChangeMysql() {
+        return groupDAO.findAllGroupOIDMySQL().stream().collect(
                 Collectors.toMap(
                         g -> g,
                         t -> contentOfScheduleDAO.getMaxModifiedTimeByGroupMySQL(t) == null ?
@@ -307,8 +354,8 @@ public class MainTemplateJDBC {
                 ));
     }
 
-    private Map<String, String> getMaxTimeSchedGroupsChangeOracle() {
-        return groupDAO.findAllGroupsOracle().stream().collect(
+    private Map<Integer, String> getMaxTimeSchedGroupsChangeOracle() {
+        return groupDAO.findAllGroupOIDOracle().stream().collect(
                 Collectors.toMap(
                         g -> g,
                         t -> contentOfScheduleDAO.getMaxModifiedTimeByGroupOracle(t) == null ?
@@ -372,11 +419,8 @@ public class MainTemplateJDBC {
         if (oracle == null)
             return new ArrayList<>();
         if (mysql.size() != oracle.size()){
-            //find all not existing and not equal
-            //and return ArrayList
+
         }
-
-
 
         Collections.sort(mysql);
         Collections.sort(oracle);
@@ -385,7 +429,7 @@ public class MainTemplateJDBC {
             System.out.println(mysql.getClass().toString());
             for (int i = 0; i < mysql.size(); i++) {
                 if (!mysql.get(i).equals(oracle)) {
-                    System.out.println(((Table) mysql.get(i)).getOID());
+                    System.out.println(((Table) mysql.get(i)).getUNIName());
                 }
             }
         }

@@ -66,4 +66,8 @@ public class Building implements Comparator, Comparable, Table {
         result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
         return result;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

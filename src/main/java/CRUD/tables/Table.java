@@ -16,5 +16,5 @@ public interface Table {
 
      */
 
-    public int getOID();
+    public String getUNIName();
 }

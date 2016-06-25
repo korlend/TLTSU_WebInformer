@@ -56,4 +56,8 @@ public class Discipline implements Comparator, Comparable, Table {
     public String getName() {
         return Name;
     }
+
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
 }

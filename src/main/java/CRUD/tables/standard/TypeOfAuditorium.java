@@ -53,6 +53,10 @@ public class TypeOfAuditorium implements Comparator, Comparable, Table {
         return OID;
     }
 
+    public String getUNIName() {
+        return Integer.toString(OID);
+    }
+
     public String getName() {
         return Name;
     }
