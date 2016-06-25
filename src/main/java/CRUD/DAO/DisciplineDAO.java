@@ -2,6 +2,7 @@ package CRUD.DAO;
 
 import CRUD.mappers.standard.DisciplineMapper;
 import CRUD.tables.standard.Discipline;
+import CRUD.tables.standard.Group;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -43,6 +44,29 @@ public class DisciplineDAO extends JdbcTemplate {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM discipline WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<Discipline> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Discipline record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM discipline WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Discipline> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Discipline record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`discipline`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getOID());
     }
 
     public void addListMySQL(List<Discipline> list) {

@@ -1,6 +1,7 @@
 package CRUD.DAO;
 
 import CRUD.mappers.standard.BuildingMapper;
+import CRUD.tables.standard.Auditorium;
 import CRUD.tables.standard.Building;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -43,6 +44,31 @@ public class BuildingDAO {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM building WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<Building> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Building record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM building WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Building> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Building record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`building`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?,\n" +
+                        "`Address` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getAddress(),
+                record.getOID());
     }
 
     public void addListMySQL(List<Building> list) {

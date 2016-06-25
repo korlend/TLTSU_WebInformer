@@ -2,6 +2,7 @@ package CRUD.DAO;
 
 import CRUD.mappers.standard.AuditoriumMapper;
 import CRUD.tables.standard.Auditorium;
+import CRUD.tables.standard.ContentOfSchedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -43,6 +44,35 @@ public class AuditoriumDAO {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM auditorium WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<Auditorium> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Auditorium record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM auditorium WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Auditorium> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Auditorium record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`auditorium`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?,\n" +
+                        "`Abbr` = ?,\n" +
+                        "`Building` = ?,\n" +
+                        "`TypeOfAuditorium` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getAbbr(),
+                record.getBuilding(),
+                record.getTypeOfAuditorium(),
+                record.getOID());
     }
 
     public void addListMySQL(List<Auditorium> list) {

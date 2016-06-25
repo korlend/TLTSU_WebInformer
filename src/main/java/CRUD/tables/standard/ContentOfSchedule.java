@@ -50,15 +50,6 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
         ContentOfSchedule that = (ContentOfSchedule) o;
 
         if (getOID() != that.getOID()) return false;
-        if (getDiscipline() != that.getDiscipline()) return false;
-        if (getKindOfWork() != that.getKindOfWork()) return false;
-        if (getLecturer() != that.getLecturer()) return false;
-        if (getAuditorium() != that.getAuditorium()) return false;
-        if (getStream() != that.getStream()) return false;
-        if (getGroup() != that.getGroup()) return false;
-        if (getSubGroup() != that.getSubGroup()) return false;
-        if (getStartOn() != null ? !getStartOn().equals(that.getStartOn()) : that.getStartOn() != null) return false;
-        if (getEndOn() != null ? !getEndOn().equals(that.getEndOn()) : that.getEndOn() != null) return false;
         return !(getModifiedTime() != null ? !getModifiedTime().equals(that.getModifiedTime()) : that.getModifiedTime() != null);
 
     }
@@ -169,5 +160,22 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
 
     public String getUNIName() {
         return Integer.toString(OID);
+    }
+
+    @Override
+    public String toString() {
+        return "ContentOfSchedule{" +
+                "OID=" + OID +
+                ", StartOn=" + StartOn +
+                ", EndOn=" + EndOn +
+                ", ModifiedTime=" + ModifiedTime +
+                ", Discipline=" + Discipline +
+                ", KindOfWork=" + KindOfWork +
+                ", Lecturer=" + Lecturer +
+                ", Auditorium=" + Auditorium +
+                ", Stream=" + Stream +
+                ", Group=" + Group +
+                ", SubGroup=" + SubGroup +
+                '}';
     }
 }

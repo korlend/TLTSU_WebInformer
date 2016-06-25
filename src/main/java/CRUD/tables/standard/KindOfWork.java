@@ -71,4 +71,13 @@ public class KindOfWork implements Comparator, Comparable, Table {
     public String getUNIName() {
         return Integer.toString(OID);
     }
+
+    @Override
+    public String toString() {
+        return "KindOfWork{" +
+                "OID=" + OID +
+                ", Name='" + Name + '\'' +
+                ", Abbr='" + Abbr + '\'' +
+                '}';
+    }
 }

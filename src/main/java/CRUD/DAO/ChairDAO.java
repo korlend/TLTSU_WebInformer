@@ -45,6 +45,31 @@ public class ChairDAO extends JdbcTemplate {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM chair WHERE OID > 0");
     }
 
+    public void deleteRowsMySQL(List<Chair> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Chair record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM chair WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Chair> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Chair record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`chair`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?,\n" +
+                        "`Auditorium` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getAuditorium(),
+                record.getOID());
+    }
+
     public void addListMySQL(List<Chair> list) {
         for (Chair entry : list) {
             this.addRowMySQL(entry);

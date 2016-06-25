@@ -93,4 +93,15 @@ public class Auditorium implements Comparator, Comparable, Table {
     public String getUNIName() {
         return Integer.toString(OID);
     }
+
+    @Override
+    public String toString() {
+        return "Auditorium{" +
+                "OID=" + OID +
+                ", Name='" + Name + '\'' +
+                ", Abbr='" + Abbr + '\'' +
+                ", Building=" + Building +
+                ", TypeOfAuditorium=" + TypeOfAuditorium +
+                '}';
+    }
 }

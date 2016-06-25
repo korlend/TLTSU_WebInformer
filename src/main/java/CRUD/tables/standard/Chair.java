@@ -71,4 +71,13 @@ public class Chair implements Comparator, Comparable, Table {
     public String getUNIName() {
         return Integer.toString(OID);
     }
+
+    @Override
+    public String toString() {
+        return "Chair{" +
+                "OID=" + OID +
+                ", Name='" + Name + '\'' +
+                ", Auditorium=" + Auditorium +
+                '}';
+    }
 }

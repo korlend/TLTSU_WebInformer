@@ -32,11 +32,11 @@ public class ScheduleUpdatesConfig {
     private ApplicationContext context = new ClassPathXmlApplicationContext("DatabaseBeans.xml");
     MainTemplateJDBC mainTemplateJDBC = (MainTemplateJDBC)context.getBean("mainTemplateJDBC");
 
-    //@Scheduled(fixedRate = 600000, initialDelay = 600)
+    @Scheduled(fixedRate = 600000, initialDelay = 0)
     public void updateDatabase() {
 
         mainTemplateJDBC.updateDatabase().stream().forEach((group) -> {
-            System.out.println(group);
+            //System.out.println(group);
             //simpMessagingTemplate.convertAndSendToUser();
         });
 

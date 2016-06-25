@@ -4,6 +4,7 @@ import CRUD.mappers.custom.GroupNamesMapper;
 import CRUD.mappers.custom.MMTStreamMapper;
 import CRUD.mappers.standard.GroupMapper;
 import CRUD.tables.custom.GroupMaxModTime;
+import CRUD.tables.standard.Chair;
 import CRUD.tables.standard.Group;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -172,6 +173,31 @@ public class GroupDAO extends JdbcTemplate {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM `group` WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<Group> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Group record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM `group` WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Group> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Group record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`group`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Course` = ?,\n" +
+                        "`Name` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getCourse(),
+                record.getName(),
+                record.getOID());
     }
 
     public void addListMySQL(List<Group> list) {

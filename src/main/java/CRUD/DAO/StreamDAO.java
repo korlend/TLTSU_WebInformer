@@ -45,6 +45,29 @@ public class StreamDAO extends JdbcTemplate {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM Stream WHERE OID > 0");
     }
 
+    public void deleteRowsMySQL(List<Stream> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Stream record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM stream WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Stream> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Stream record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`stream`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getOID());
+    }
+
     public void addListMySQL(List<Stream> list) {
         for (Stream entry : list) {
             this.addRowMySQL(entry);

@@ -1,6 +1,7 @@
 package CRUD.DAO;
 
 import CRUD.mappers.standard.KindOfWorkMapper;
+import CRUD.tables.standard.Discipline;
 import CRUD.tables.standard.KindOfWork;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -43,6 +44,31 @@ public class KindOfWorkDAO extends JdbcTemplate {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM kindofwork WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<KindOfWork> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(KindOfWork record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM kindofwork WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<KindOfWork> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(KindOfWork record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`kindofwork`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`Name` = ?,\n" +
+                        "`Abbr` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getAbbr(),
+                record.getOID());
     }
 
     public void addListMySQL(List<KindOfWork> list) {

@@ -2,6 +2,7 @@ package CRUD.DAO;
 
 import CRUD.mappers.custom.CustomContentOfScheduleMapper;
 import CRUD.mappers.standard.ContentOfScheduleMapper;
+import CRUD.tables.Table;
 import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.ContentOfSchedule;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -118,8 +120,49 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "\"SubGroup\" from \"ContentOfSchedule\"", new ContentOfScheduleMapper());
     }
 
+    public void updateRowsMySQL(List<ContentOfSchedule> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(ContentOfSchedule record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `contentofschedule`\n" +
+                "SET\n" +
+                "`OID` = ?,\n" +
+                "`StartOn` = ?,\n" +
+                "`EndOn` = ?,\n" +
+                "`ModifiedTime` = ?,\n" +
+                "`Discipline` = ?,\n" +
+                "`KindOfWork` = ?,\n" +
+                "`Lecturer` = ?,\n" +
+                "`Auditorium` = ?,\n" +
+                "`Stream` = ?,\n" +
+                "`GroupOID` = ?,\n" +
+                "`SubGroup` = ?\n" +
+                "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getStartOn(),
+                record.getEndOn(),
+                record.getModifiedTime(),
+                record.getDiscipline() == 0 ? null : record.getDiscipline(),
+                record.getKindOfWork() == 0 ? null : record.getKindOfWork(),
+                record.getLecturer() == 0 ? null : record.getLecturer(),
+                record.getAuditorium() == 0 ? null : record.getAuditorium(),
+                record.getStream() == 0 ? null : record.getStream(),
+                record.getGroup() == 0 ? null : record.getGroup(),
+                record.getSubGroup() == 0 ? null : record.getSubGroup(),
+                record.getOID());
+    }
+
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM contentofschedule WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<ContentOfSchedule> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(ContentOfSchedule record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM contentofschedule WHERE OID = " + record.getOID());
     }
 
     public void addListMySQL(List<ContentOfSchedule> list) {

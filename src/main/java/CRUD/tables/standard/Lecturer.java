@@ -71,4 +71,13 @@ public class Lecturer implements Comparator, Comparable, Table {
     public String getUNIName() {
         return Integer.toString(OID);
     }
+
+    @Override
+    public String toString() {
+        return "Lecturer{" +
+                "OID=" + OID +
+                ", FIO='" + FIO + '\'' +
+                ", Chair=" + Chair +
+                '}';
+    }
 }

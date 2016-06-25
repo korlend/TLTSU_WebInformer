@@ -57,6 +57,14 @@ public class SubGroup implements Comparator, Comparable, Table {
         return Integer.toString(OID);
     }
 
+    @Override
+    public String toString() {
+        return "SubGroup{" +
+                "OID=" + OID +
+                ", Group=" + Group +
+                '}';
+    }
+
     public int getOID() {
         return OID;
     }

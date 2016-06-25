@@ -49,6 +49,14 @@ public class TypeOfAuditorium implements Comparator, Comparable, Table {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "TypeOfAuditorium{" +
+                "OID=" + OID +
+                ", Name='" + Name + '\'' +
+                '}';
+    }
+
     public int getOID() {
         return OID;
     }

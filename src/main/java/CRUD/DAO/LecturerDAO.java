@@ -45,6 +45,31 @@ public class LecturerDAO extends JdbcTemplate {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM Lecturer WHERE OID > 0");
     }
 
+    public void deleteRowsMySQL(List<Lecturer> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(Lecturer record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM lecturer WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<Lecturer> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(Lecturer record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`lecturer`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`FIO` = ?,\n" +
+                        "`Chair` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getFIO(),
+                record.getChair(),
+                record.getOID());
+    }
+
     public void addListMySQL(List<Lecturer> list) {
         for (Lecturer entry : list) {
             this.addRowMySQL(entry);

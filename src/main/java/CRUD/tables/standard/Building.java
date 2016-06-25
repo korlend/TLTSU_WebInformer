@@ -70,4 +70,13 @@ public class Building implements Comparator, Comparable, Table {
     public String getUNIName() {
         return Integer.toString(OID);
     }
+
+    @Override
+    public String toString() {
+        return "Building{" +
+                "OID=" + OID +
+                ", Name='" + Name + '\'' +
+                ", Address='" + Address + '\'' +
+                '}';
+    }
 }

@@ -131,10 +131,6 @@ public class MainTemplateJDBC {
     public List<String> updateDatabase() {
         List<String> updatedGroups = new ArrayList<>();
         List<GroupMaxModTime> mysqlGroups = groupDAO.findAllGroupsMMTMySQL();
-        List<GroupMaxModTime> oracleGroups = groupDAO.findAllGroupsMMTOracle();
-
-        GregorianCalendar time = new GregorianCalendar();
-        System.out.println("mapping mysql");
         Map<String, Timestamp> mapMysql = groupDAO.findAllGroupsMMTMySQL().stream().collect(
                 Collectors.toMap(k -> k.getGroupName(), v -> v.getMaxModTime()));
         groupDAO.findAllSubGroupsMMTMySQL().stream().collect(
@@ -146,7 +142,6 @@ public class MainTemplateJDBC {
                     }
                     else mapMysql.put(k, v);
                 });
-
         groupDAO.findAllStreamsMMTMySQL().stream()
                 .forEach((k) -> {
                     if (mapMysql.containsKey(k.getGroupName())) {
@@ -156,9 +151,6 @@ public class MainTemplateJDBC {
                     else mapMysql.put(k.getGroupName(), k.getMaxModTime());
                 });
 
-        System.out.println("mysql ended: " + (new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis()));
-
-        time = new GregorianCalendar();
         Map<String, Timestamp> mapOracle = groupDAO.findAllGroupsMMTOracle().stream().collect(
                 Collectors.toMap(k -> k.getGroupName(), v -> v.getMaxModTime()));
         groupDAO.findAllSubGroupsMMTOracle().stream().collect(
@@ -170,7 +162,6 @@ public class MainTemplateJDBC {
                     }
                     else mapOracle.put(k, v);
                 });
-
         groupDAO.findAllStreamsMMTOracle().stream()
                 .forEach((k) -> {
                     if (mapOracle.containsKey(k.getGroupName())) {
@@ -180,33 +171,15 @@ public class MainTemplateJDBC {
                     else mapOracle.put(k.getGroupName(), k.getMaxModTime());
                 });
 
-        /*if (mysqlGroups.size() != oracleGroups.size()) {
-            updateAllExceptSchedule();
-            return this.updateDatabase();
-        }*/
-        //equalLists(groupDAO.findAllStreamsMMTMySQL(),groupDAO.findAllStreamsMMTOracle());
-
-
-        System.out.println("oracle ended: " + (new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis()));
-        System.out.println(mapMysql.size() + " " + mapOracle.size());
-
-        for (int i = 0; i < mysqlGroups.size(); i++) {
-            String currentGroup = mysqlGroups.get(i).getGroupName();
-            Timestamp maxModTimeMysql = mapMysql.get(currentGroup);
-            Timestamp maxModTimeOracle = mapOracle.get(currentGroup);
-            //System.out.println("M: "+groupMySQL.getGroupName() + ": " + groupMySQL.getMaxModTime());
-            //System.out.println("O: "+groupOracle.getGroupName() + ": " + groupOracle.getMaxModTime());
-            if (maxModTimeMysql != null && maxModTimeOracle != null && !maxModTimeMysql.equals(maxModTimeOracle)) {
-                System.out.println(currentGroup + ": " + maxModTimeMysql + " != " + maxModTimeOracle);
-                updatedGroups.add(currentGroup);
+        mapOracle.forEach((group, MMTOracle) -> {
+            Timestamp MMTMysql = mapMysql.get(group);
+            if (MMTMysql == null || !MMTMysql.equals(MMTOracle)) {
+                //System.out.println(group + ": " + maxModTimeMysql + " != " + MMTOracle);
+                updatedGroups.add(group);
             }
-            mapMysql.remove(currentGroup);
-            mapOracle.remove(currentGroup);
-        }
+        });
         if (!updatedGroups.isEmpty()) {
-            //если есть группа измененная надо добавить изменения в mysql
-            //contentOfScheduleDAO.deleteAllMySQL();
-            //contentOfScheduleDAO.addListMySQL(contentOfScheduleDAO.findAllOracle());
+            fullDatabaseUpdate();
 
         } else {System.out.println("нет различий");}
         return updatedGroups;
@@ -238,33 +211,6 @@ public class MainTemplateJDBC {
         contentOfScheduleDAO.addListMySQL(prevDataCOS);
     }
 
-    public void updateAllExceptSchedule() {
-        /**
-         * перепишу этот метод потом
-         *
-         * есть идея распихать не в лист, а в мапу
-         * например: Map<Integer, Auditorium>
-         *     тут Integer это id аудитории
-         *     таким образом можно сравнивать по индексам
-         *     потом просто обновлять данные выборочно,
-         *     там где есть изменения, буду делать update
-         */
-        /*
-        List<Auditorium> auditorium = new ArrayList<>();
-        List<Building> building = new ArrayList<>();
-        List<Chair> chairs = new ArrayList<>();
-        List<ContentOfSchedule> contentOfSchedule = new ArrayList<>();
-        List<Discipline> discipline = new ArrayList<>();
-        List<Group> group = new ArrayList<>();
-        List<KindOfWork> kindOfWork = new ArrayList<>();
-        List<Lecturer> lecturer = new ArrayList<>();
-        List<Stream> stream = new ArrayList<>();
-        List<SubGroup> subGroup = new ArrayList<>();
-        List<TypeOfAuditorium> typeOfAuditorium = new ArrayList<>();
-        */
-        collectDataPrevCOS(deleteAllMySQL());
-    }
-
     private List<ContentOfSchedule> deleteAllMySQL() {
         /**
          * удаляет все данные из таблиц в правильном порядке
@@ -291,34 +237,74 @@ public class MainTemplateJDBC {
         return dataContentOfSchedule;
     }
 
-    public void fullDatabaseCheck() {
-        GregorianCalendar time = new GregorianCalendar();
-        /*
-        if (!equalLists(auditoriumDAO.findAllMySQL(), auditoriumDAO.findAllOracle()))
-            System.out.println("auditorium");
-        if (!equalLists(chairDAO.findAllMySQL(), chairDAO.findAllOracle()))
-            System.out.println("chair");
-        if (!equalLists(buildingDAO.findAllMySQL(), buildingDAO.findAllOracle())) {
-            System.out.println("building");
-        }
-        if (!equalLists(contentOfScheduleDAO.findAllMySQL(), contentOfScheduleDAO.findAllOracle()))
-            System.out.println("content of schedule");
-        if (!equalLists(disciplineDAO.findAllMySQL(), disciplineDAO.findAllOracle()))
-            System.out.println("discipline");
-        if (!equalLists(groupDAO.findAllMySQL(), groupDAO.findAllOracle()))
-            System.out.println("group");
-        if (!equalLists(kindOfWorkDAO.findAllMySQL(), kindOfWorkDAO.findAllOracle()))
-            System.out.println("kind of work");
-        if (!equalLists(lecturerDAO.findAllMySQL(), lecturerDAO.findAllOracle()))
-            System.out.println("lecturer");
-        if (!equalLists(streamDAO.findAllMySQL(), streamDAO.findAllOracle()))
-            System.out.println("stream");
-        if (!equalLists(subGroupDAO.findAllMySQL(), subGroupDAO.findAllOracle()))
-            System.out.println("sub group");
-        if (!equalLists(typeOfAuditoriumDAO.findAllMySQL(), typeOfAuditoriumDAO.findAllOracle()))
-            System.out.println("type of auditorium");
-            */
-        System.out.println(new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis());
+    public  void fullDatabaseUpdate() {
+        AbstractMap.SimpleEntry insertDelete;
+        /**
+         * 2 lvl
+         */
+        insertDelete = equalLists(contentOfScheduleDAO.findAllMySQL(), contentOfScheduleDAO.findAllOracle());
+        contentOfScheduleDAO.deleteRowsMySQL((List<ContentOfSchedule>)insertDelete.getValue());
+        List<ContentOfSchedule> toInsertContentOfSchedule = (List<ContentOfSchedule>)insertDelete.getKey();
+        /**
+         * 1 lvl
+         */
+        insertDelete = equalLists(auditoriumDAO.findAllMySQL(), auditoriumDAO.findAllOracle());
+        auditoriumDAO.deleteRowsMySQL((List<Auditorium>)insertDelete.getValue());
+        List<Auditorium> toInsertAuditorium = (List<Auditorium>)insertDelete.getKey();
+
+        insertDelete = equalLists(subGroupDAO.findAllMySQL(), subGroupDAO.findAllOracle());
+        subGroupDAO.deleteRowsMySQL((List<SubGroup>)insertDelete.getValue());
+        List<SubGroup> toInsertSubGroup = (List<SubGroup>)insertDelete.getKey();
+
+        insertDelete = equalLists(groupDAO.findAllMySQL(), groupDAO.findAllOracle());
+        groupDAO.deleteRowsMySQL((List<Group>)insertDelete.getValue());
+        List<Group> toInsertGroup = (List<Group>)insertDelete.getKey();
+        /**
+         * 0 lvl
+         */
+        insertDelete = equalLists(kindOfWorkDAO.findAllMySQL(), kindOfWorkDAO.findAllOracle());
+        kindOfWorkDAO.deleteRowsMySQL((List<KindOfWork>)insertDelete.getValue());
+        List<KindOfWork> toInsertKindOfWork = (List<KindOfWork>)insertDelete.getKey();
+
+        insertDelete = equalLists(lecturerDAO.findAllMySQL(), lecturerDAO.findAllOracle());
+        lecturerDAO.deleteRowsMySQL((List<Lecturer>)insertDelete.getValue());
+        List<Lecturer> toInsertLecturer = (List<Lecturer>)insertDelete.getKey();
+
+        insertDelete = equalLists(typeOfAuditoriumDAO.findAllMySQL(), typeOfAuditoriumDAO.findAllOracle());
+        typeOfAuditoriumDAO.deleteRowsMySQL((List<TypeOfAuditorium>)insertDelete.getValue());
+        List<TypeOfAuditorium> toInsertTypeOfAuditorium = (List<TypeOfAuditorium>)insertDelete.getKey();
+
+        insertDelete = equalLists(streamDAO.findAllMySQL(), streamDAO.findAllOracle());
+        streamDAO.deleteRowsMySQL((List<Stream>)insertDelete.getValue());
+        List<Stream> toInsertStream = (List<Stream>)insertDelete.getKey();
+
+        insertDelete = equalLists(disciplineDAO.findAllMySQL(), disciplineDAO.findAllOracle());
+        disciplineDAO.deleteRowsMySQL((List<Discipline>)insertDelete.getValue());
+        List<Discipline> toInsertDiscipline = (List<Discipline>)insertDelete.getKey();
+
+        insertDelete = equalLists(chairDAO.findAllMySQL(), chairDAO.findAllOracle());
+        chairDAO.deleteRowsMySQL((List<Chair>)insertDelete.getValue());
+        List<Chair> toInsertChair = (List<Chair>)insertDelete.getKey();
+
+        insertDelete = equalLists(buildingDAO.findAllMySQL(), buildingDAO.findAllOracle());
+        buildingDAO.deleteRowsMySQL((List<Building>)insertDelete.getValue());
+        List<Building> toInsertBuilding = (List<Building>)insertDelete.getKey();
+
+        /**
+         * now insert this
+         */
+        buildingDAO.addListMySQL(toInsertBuilding);
+        chairDAO.addListMySQL(toInsertChair);
+        disciplineDAO.addListMySQL(toInsertDiscipline);
+        streamDAO.addListMySQL(toInsertStream);
+        typeOfAuditoriumDAO.addListMySQL(toInsertTypeOfAuditorium);
+        lecturerDAO.addListMySQL(toInsertLecturer);
+        kindOfWorkDAO.addListMySQL(toInsertKindOfWork);
+        groupDAO.addListMySQL(toInsertGroup);
+        subGroupDAO.addListMySQL(toInsertSubGroup);
+        auditoriumDAO.addListMySQL(toInsertAuditorium);
+        contentOfScheduleDAO.addListMySQL(toInsertContentOfSchedule);
+
     }
 
     public void simpleDeleteAllMySQL() {
@@ -410,29 +396,41 @@ public class MainTemplateJDBC {
 
     public ConnectedUsersDAO getConnectedUsersDAO() { return connectedUsersDAO;}
 
-    public static <T extends Table & Comparable<? super T>> List<Table> equalLists (List<T> mysql, List<T> oracle) {
-        if (mysql == null && oracle == null){
-            return new ArrayList<>();
+
+    /**
+     * method search redundant and not equal records in mysql list using oracle list as reference
+     * @param mysql List(T) from mysql
+     * @param oracle List(T) from oracle
+     * @param <T> Comparable Table to update
+     * @return SimpleEntry Key(T objects to insert) Value(T objects to delete)
+     */
+    public <T extends Table & Comparable<? super T>> AbstractMap.SimpleEntry<List<T>, List<T>> equalLists
+            (List<T> mysql,
+             List<T> oracle)
+    {
+        if (mysql == null && oracle == null) {
+            return new AbstractMap.SimpleEntry<List<T>, List<T>>(new ArrayList<>(), new ArrayList<>());
         }
         if (mysql == null)
-            return new ArrayList<>(oracle);
+            return new AbstractMap.SimpleEntry<List<T>, List<T>>(oracle, new ArrayList<>());
         if (oracle == null)
-            return new ArrayList<>();
-        if (mysql.size() != oracle.size()){
-
-        }
+            return new AbstractMap.SimpleEntry<List<T>, List<T>>(new ArrayList<>(), mysql);
 
         Collections.sort(mysql);
         Collections.sort(oracle);
-        if (!mysql.equals(oracle))
-        {
-            System.out.println(mysql.getClass().toString());
-            for (int i = 0; i < mysql.size(); i++) {
-                if (!mysql.get(i).equals(oracle)) {
-                    System.out.println(((Table) mysql.get(i)).getUNIName());
-                }
-            }
-        }
-        return new ArrayList<>();
+
+        if (mysql.equals(oracle)) return new AbstractMap.SimpleEntry<List<T>, List<T>>(new ArrayList<>(), new ArrayList<>());;
+        List<T> list = new ArrayList<>();
+        oracle.forEach(r -> {//if row from oracle not exist in mysql then this row needed to be deleted and inserted
+            if (!mysql.contains(r)) {
+                list.add(r);
+            } else mysql.remove(r);
+        });
+        /* Для тестирования
+        list.forEach(r -> {
+            System.out.println(r);
+        });
+        */
+        return new AbstractMap.SimpleEntry<List<T>, List<T>>(list, mysql);
     }
 }

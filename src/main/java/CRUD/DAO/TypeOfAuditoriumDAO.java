@@ -1,6 +1,7 @@
 package CRUD.DAO;
 
 import CRUD.mappers.standard.TypeOfAuditoriumMapper;
+import CRUD.tables.standard.SubGroup;
 import CRUD.tables.standard.TypeOfAuditorium;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -43,6 +44,29 @@ public class TypeOfAuditoriumDAO extends JdbcTemplate {
 
     public void deleteAllMySQL() {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM TypeOfAuditorium WHERE OID > 0");
+    }
+
+    public void deleteRowsMySQL(List<TypeOfAuditorium> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(TypeOfAuditorium record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM typeofauditorium WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<TypeOfAuditorium> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(TypeOfAuditorium record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`typeofauditorium`\n" +
+                        "SET\n" +
+                        "`OID` = <?,\n" +
+                        "`Name` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getName(),
+                record.getOID());
     }
 
     public void addListMySQL(List<TypeOfAuditorium> list) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import spring.json.SimpleJsonParser;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @RestController
@@ -33,13 +34,24 @@ public class DataResponseController {
         //mainTemplateJDBC.updateDatabase();
     }
 
+    @RequestMapping("/Drop")
+    public void dataDrop() {
+        mainTemplateJDBC.simpleDeleteAllMySQL();
+    }
+
     @RequestMapping("/Test")
-    public void createConnectedUser() {
-        //mainTemplateJDBC.unknownFunction();
+    public void test() {
+        GregorianCalendar time = new GregorianCalendar();
+
+        mainTemplateJDBC.getContentOfScheduleDAO().deleteAllMySQL();
+        mainTemplateJDBC.getContentOfScheduleDAO().addListMySQL(mainTemplateJDBC.findAllOracle());
+
+        System.out.println(new GregorianCalendar().getTimeInMillis() - time.getTimeInMillis());
+    }
+
+    @RequestMapping("/Update")
+    public void dataUpdate() {
         mainTemplateJDBC.updateDatabase();
-        //mainTemplateJDBC.simpleDeleteAllMySQL();
-        //mainTemplateJDBC.simpleCollectData();
-        //mainTemplateJDBC.fullDatabaseCheck();
     }
 
     @RequestMapping("/GetAllGroupsOracle")

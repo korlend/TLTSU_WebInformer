@@ -45,6 +45,29 @@ public class SubGroupDAO extends JdbcTemplate {
         this.jdbcTemplateObjectMySQL.execute("DELETE FROM SubGroup WHERE OID > 0");
     }
 
+    public void deleteRowsMySQL(List<SubGroup> list) {
+        list.forEach(r -> deleteRowMySQL(r));
+    }
+
+    public void deleteRowMySQL(SubGroup record) {
+        this.jdbcTemplateObjectMySQL.execute("DELETE FROM subgroup WHERE OID = " + record.getOID());
+    }
+
+    public void updateRowsMySQL(List<SubGroup> records) {
+        records.forEach(rec -> this.updateRowMySQL(rec));
+    }
+
+    public void updateRowMySQL(SubGroup record) {
+        jdbcTemplateObjectMySQL.update("UPDATE `tltsudb`.`subgroup`\n" +
+                        "SET\n" +
+                        "`OID` = ?,\n" +
+                        "`GroupOID` = ?\n" +
+                        "WHERE `OID` = ?\n",
+                record.getOID(),
+                record.getGroup(),
+                record.getOID());
+    }
+
     public void addListMySQL(List<SubGroup> list) {
         for (SubGroup entry : list) {
             this.addRowMySQL(entry);
