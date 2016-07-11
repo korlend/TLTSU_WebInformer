@@ -17,6 +17,7 @@ public class CustomContentOfScheduleMapper implements RowMapper<CustomContentOfS
         contentOfSchedule.setKindOfWorkName(rs.getString("KindOfWork"));
         contentOfSchedule.setLecturerFIO(rs.getString("Lecturer"));
         contentOfSchedule.setAuditoriumAbbr(rs.getString("Auditorium"));
+        contentOfSchedule.setNumberOfPair(rs.getString("ContentTableOfLesson"));
         contentOfSchedule.setEndOn(rs.getTimestamp("EndOn").toString());
         contentOfSchedule.setStartOn(rs.getTimestamp("StartOn").toString());
         contentOfSchedule.setModifiedTime(rs.getTimestamp("ModifiedTime").toString());

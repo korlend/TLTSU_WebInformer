@@ -2,19 +2,17 @@ package com.configuration;
 
 import CRUD.MainTemplateJDBC;
 import CRUD.tables.custom.ConnectedUsers;
-import com.response.classes.Greeting;
+import CRUD.tables.custom.CustomContentOfSchedule;
+import com.response.classes.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,23 +32,15 @@ public class ScheduleUpdatesConfig {
 
     @Scheduled(fixedRate = 600000, initialDelay = 0)
     public void updateDatabase() {
-
-        mainTemplateJDBC.updateDatabase().stream().forEach((group) -> {
-            //System.out.println(group);
-            //simpMessagingTemplate.convertAndSendToUser();
+        List<ConnectedUsers> connectedUsersList = mainTemplateJDBC.getConnectedUsersDAO().findAllMySQL();
+        mainTemplateJDBC.updateDatabase().forEach((group) -> {
+            List<CustomContentOfSchedule> schedule = mainTemplateJDBC.findAllMySQL(group);
+            simpMessagingTemplate.convertAndSend("/topic/" + group, new Message(schedule));
+            connectedUsersList.forEach(r -> {
+                if (r.getPreferred_groups().contains(group))
+                    simpMessagingTemplate.convertAndSend("/topic/" + r.getDevice_id(),
+                            new Message(schedule));
+            });
         });
-
     }
-
-    /*
-     * для тестирования
-    */
-    //@Scheduled(fixedRate = 30000, initialDelay = 5000)
-    public void update() {
-        for (ConnectedUsers entry : mainTemplateJDBC.getConnectedUsersDAO().findAllMySQL()) {
-            simpMessagingTemplate.convertAndSend("/topic/" + entry.getDevice_id(),
-                    new Greeting(entry.getPreferred_groups().toString()));
-        }
-    }
-
 }

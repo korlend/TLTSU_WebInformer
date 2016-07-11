@@ -17,12 +17,11 @@ import java.util.stream.Collectors;
  * Created by Артем on 04.05.2016.
  */
 public class MainTemplateJDBC {
-
     /**
      * tables to collect data
      */
 
-
+    private ContentTableOfLessonDAO contentTableOfLessonDAO;
     private BuildingDAO buildingDAO;
     private ChairDAO chairDAO;
     private DisciplineDAO disciplineDAO;
@@ -60,6 +59,7 @@ public class MainTemplateJDBC {
         /**
          * initialization of templates
          */
+        contentTableOfLessonDAO = new ContentTableOfLessonDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         buildingDAO = new BuildingDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         chairDAO = new ChairDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         disciplineDAO = new DisciplineDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
@@ -73,7 +73,6 @@ public class MainTemplateJDBC {
         contentOfScheduleDAO = new ContentOfScheduleDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         connectedUsersDAO = new ConnectedUsersDAO(jdbcTemplateObjectMySQL);
     }
-
 
     public List<ContentOfSchedule> findAllMySQL() {
         return contentOfScheduleDAO.findAllMySQL();
@@ -106,6 +105,8 @@ public class MainTemplateJDBC {
         /**
          * 0 lvl
          */
+
+        contentTableOfLessonDAO.addListMySQL(contentTableOfLessonDAO.findAllOracle());
         buildingDAO.addListMySQL(buildingDAO.findAllOracle());
         chairDAO.addListMySQL(chairDAO.findAllOracle());
         disciplineDAO.addListMySQL(disciplineDAO.findAllOracle());
@@ -174,14 +175,10 @@ public class MainTemplateJDBC {
         mapOracle.forEach((group, MMTOracle) -> {
             Timestamp MMTMysql = mapMysql.get(group);
             if (MMTMysql == null || !MMTMysql.equals(MMTOracle)) {
-                //System.out.println(group + ": " + maxModTimeMysql + " != " + MMTOracle);
                 updatedGroups.add(group);
             }
         });
-        if (!updatedGroups.isEmpty()) {
-            fullDatabaseUpdate();
-
-        } else {System.out.println("нет различий");}
+        fullDatabaseUpdate();
         return updatedGroups;
     }
 
@@ -194,6 +191,7 @@ public class MainTemplateJDBC {
          */
 
         /** 0 lvl **/
+        contentTableOfLessonDAO.addListMySQL(contentTableOfLessonDAO.findAllOracle());
         buildingDAO.addListMySQL(buildingDAO.findAllOracle());
         chairDAO.addListMySQL(chairDAO.findAllOracle());
         disciplineDAO.addListMySQL(disciplineDAO.findAllOracle());
@@ -234,6 +232,7 @@ public class MainTemplateJDBC {
         disciplineDAO.deleteAllMySQL();
         chairDAO.deleteAllMySQL();
         buildingDAO.deleteAllMySQL();
+        contentTableOfLessonDAO.deleteAllMySQL();
         return dataContentOfSchedule;
     }
 
@@ -290,9 +289,15 @@ public class MainTemplateJDBC {
         buildingDAO.deleteRowsMySQL((List<Building>)insertDelete.getValue());
         List<Building> toInsertBuilding = (List<Building>)insertDelete.getKey();
 
+        insertDelete = equalLists(contentTableOfLessonDAO.findAllMySQL(), contentTableOfLessonDAO.findAllOracle());
+        contentTableOfLessonDAO.deleteRowsMySQL((List<ContentTableOfLesson>)insertDelete.getValue());
+        List<ContentTableOfLesson> toInsertContentTableOfLesson = (List<ContentTableOfLesson>)insertDelete.getKey();
+
         /**
          * now insert this
          */
+
+        contentTableOfLessonDAO.addListMySQL(toInsertContentTableOfLesson);
         buildingDAO.addListMySQL(toInsertBuilding);
         chairDAO.addListMySQL(toInsertChair);
         disciplineDAO.addListMySQL(toInsertDiscipline);
@@ -328,6 +333,7 @@ public class MainTemplateJDBC {
         disciplineDAO.deleteAllMySQL();
         chairDAO.deleteAllMySQL();
         buildingDAO.deleteAllMySQL();
+        contentTableOfLessonDAO.deleteAllMySQL();
     }
 
     private Map<Integer, String> getMaxTimeSchedGroupsChangeMysql() {
@@ -394,8 +400,13 @@ public class MainTemplateJDBC {
         return typeOfAuditoriumDAO;
     }
 
+    public ContentTableOfLessonDAO getContentTableOfLessonDAO() {return  contentTableOfLessonDAO;}
+
     public ConnectedUsersDAO getConnectedUsersDAO() { return connectedUsersDAO;}
 
+    public JdbcTemplate getJdbcTemplateObjectMySQL() {return jdbcTemplateObjectMySQL;}
+
+    public JdbcTemplate getJdbcTemplateObjectOracle() {return jdbcTemplateObjectOracle;}
 
     /**
      * method search redundant and not equal records in mysql list using oracle list as reference

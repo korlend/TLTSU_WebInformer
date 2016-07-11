@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -46,14 +48,14 @@ public class ConnectedUsersDAO {
             System.out.println("no such user");
             return;
         }
-        List<Object> groups = this.getGroupsFromUser(device_id);
+        List<String> groups = this.getGroupsFromUser(device_id);
         groups.add(group);
         this.jdbcTemplateObjectMySQL.execute("update connected_users set preferred_groups = '" +
                 groups.toString() + "'" +
                 "where `id` = " + id);
     }
 
-    private List<Object> getGroupsFromUser(String device_id) {
+    private List<String> getGroupsFromUser(String device_id) {
         return this.findAllMySQL(device_id).get(0).getPreferred_groups();
     }
 
@@ -70,6 +72,7 @@ public class ConnectedUsersDAO {
     public void addRowMySQL(ConnectedUsers record) {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("device_id", record.getDevice_id())
+                .addValue("connected_time", new Timestamp(new java.util.Date().getTime()), Types.TIMESTAMP)
                 .addValue("preferred_groups", record.getPreferred_groups().toString());
         this.jdbcInsertMySQL.execute(parameters);
     }

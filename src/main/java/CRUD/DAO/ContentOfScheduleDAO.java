@@ -68,6 +68,7 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "cos.StartOn," +
                 "cos.EndOn," +
                 "cos.ModifiedTime," +
+                "cos.ContentTableOfLesson," +
                 "dis.`Name` as Discipline," +
                 "kow.`Name` as KindOfWork," +
                 "lect.FIO as Lecturer," +
@@ -89,6 +90,7 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "cos.StartOn," +
                 "cos.EndOn," +
                 "cos.ModifiedTime," +
+                "cos.ContentTableOfLesson," +
                 "dis.`Name` as Discipline," +
                 "kow.`Name` as KindOfWork," +
                 "lect.FIO as Lecturer," +
@@ -98,11 +100,11 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
-                "where GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
+                "where (GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
                 "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupName + "%')) " +
-                "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%') " +
-                "and StartOn > '" + StartOn+ "' " +
-                "and StartOn < '" + EndOn + "' ";
+                "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%')) " +
+                "and StartOn BETWEEN DATE('" + StartOn+ "') " +
+                "and DATE('" + EndOn + "') ";
         return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
     }
 
@@ -115,9 +117,16 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "\"KindOfWork\"," +
                 "\"Lecturer\"," +
                 "\"Auditorium\"," +
+                "\"ContentTableOfLesson\"," +
                 "\"Stream\"," +
                 "\"Group\" as GroupOID," +
-                "\"SubGroup\" from \"ContentOfSchedule\"", new ContentOfScheduleMapper());
+                "\"SubGroup\" from \"ContentOfSchedule\" " +
+                "where \"Discipline\" is not null " +
+                "and \"KindOfWork\" is not null " +
+                "and \"Lecturer\" is not null " +
+                "and \"ContentTableOfLesson\" is not null " +
+                "and \"Auditorium\" is not null "
+                ,new ContentOfScheduleMapper());
     }
 
     public void updateRowsMySQL(List<ContentOfSchedule> records) {
@@ -137,19 +146,21 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "`Auditorium` = ?,\n" +
                 "`Stream` = ?,\n" +
                 "`GroupOID` = ?,\n" +
-                "`SubGroup` = ?\n" +
+                "`SubGroup` = ?,\n" +
+                "`ContentTableOfLesson` = ?\n" +
                 "WHERE `OID` = ?\n",
                 record.getOID(),
                 record.getStartOn(),
                 record.getEndOn(),
                 record.getModifiedTime(),
-                record.getDiscipline() == 0 ? null : record.getDiscipline(),
-                record.getKindOfWork() == 0 ? null : record.getKindOfWork(),
-                record.getLecturer() == 0 ? null : record.getLecturer(),
-                record.getAuditorium() == 0 ? null : record.getAuditorium(),
+                record.getDiscipline(),
+                record.getKindOfWork(),
+                record.getLecturer(),
+                record.getAuditorium(),
                 record.getStream() == 0 ? null : record.getStream(),
                 record.getGroup() == 0 ? null : record.getGroup(),
                 record.getSubGroup() == 0 ? null : record.getSubGroup(),
+                record.getContentTableOfLesson(),
                 record.getOID());
     }
 
@@ -171,41 +182,20 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
         }
     }
 
-    public void addListOracle(List<ContentOfSchedule> list) {
-        for (ContentOfSchedule entry : list) {
-            this.addRowOracle(entry);
-        }
-    }
-
     public void addRowMySQL(ContentOfSchedule record) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("Auditorium", record.getAuditorium() == 0 ? null : record.getAuditorium())
-                .addValue("Discipline", record.getDiscipline() == 0 ? null : record.getDiscipline())
-                .addValue("OID", record.getOID())
-                .addValue("KindOfWork", record.getKindOfWork() == 0 ? null : record.getKindOfWork())
-                .addValue("Lecturer", record.getLecturer() == 0 ? null : record.getLecturer())
-                .addValue("Stream", record.getStream() == 0 ? null : record.getStream())
-                .addValue("SubGroup", record.getSubGroup() == 0 ? null : record.getSubGroup())
-                .addValue("ModifiedTime", record.getModifiedTime())
-                .addValue("StartOn", record.getStartOn())
-                .addValue("EndOn", record.getEndOn())
-                .addValue("GroupOID", record.getGroup() == 0 ? null : record.getGroup());
-        this.jdbcInsertMySQL.execute(parameterSource);
-    }
-
-    public void addRowOracle(ContentOfSchedule record) {
-        SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("Auditorium", record.getAuditorium())
                 .addValue("Discipline", record.getDiscipline())
                 .addValue("OID", record.getOID())
                 .addValue("KindOfWork", record.getKindOfWork())
                 .addValue("Lecturer", record.getLecturer())
-                .addValue("Stream", record.getStream())
-                .addValue("SubGroup", record.getSubGroup())
+                .addValue("Stream", record.getStream() == 0 ? null : record.getStream())
+                .addValue("SubGroup", record.getSubGroup() == 0 ? null : record.getSubGroup())
                 .addValue("ModifiedTime", record.getModifiedTime())
                 .addValue("StartOn", record.getStartOn())
                 .addValue("EndOn", record.getEndOn())
-                .addValue("Group", record.getGroup());
-        this.jdbcInsertOracle.execute(parameters);
+                .addValue("ContentTableOfLesson", record.getContentTableOfLesson())
+                .addValue("GroupOID", record.getGroup() == 0 ? null : record.getGroup());
+        this.jdbcInsertMySQL.execute(parameterSource);
     }
 }

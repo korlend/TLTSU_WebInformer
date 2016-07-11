@@ -1,19 +1,11 @@
 package com.controllers;
 
-import com.response.classes.Greeting;
-import com.response.classes.HelloMessage;
 import org.springframework.boot.json.BasicJsonParser;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Артем on 07.06.2016.

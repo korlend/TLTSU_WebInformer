@@ -2,7 +2,9 @@ package CRUD.tables.custom;
 
 import spring.json.SimpleJsonParser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Артем on 13.06.2016.
@@ -11,13 +13,13 @@ public class ConnectedUsers {
     private int id;
     private String device_id;
     private String connected_time;
-    private List<Object> preferred_groups;
+    private List<String> preferred_groups;
 
     public ConnectedUsers() {}
 
     public ConnectedUsers(String device_id, String preferred_groups) {
         this.device_id = device_id;
-        this.preferred_groups = new SimpleJsonParser().parseList(preferred_groups);
+        new SimpleJsonParser().parseList(preferred_groups).forEach(el -> this.preferred_groups.add(el.toString()));
     }
 
     @Override
@@ -32,18 +34,7 @@ public class ConnectedUsers {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ConnectedUsers)) return false;
-
-        ConnectedUsers that = (ConnectedUsers) o;
-
-        if (getId() != that.getId()) return false;
-        if (getDevice_id() != null ? !getDevice_id().equals(that.getDevice_id()) : that.getDevice_id() != null)
-            return false;
-        if (getConnected_time() != null ? !getConnected_time().equals(that.getConnected_time()) : that.getConnected_time() != null)
-            return false;
-        return !(getPreferred_groups() != null ? !getPreferred_groups().equals(that.getPreferred_groups()) : that.getPreferred_groups() != null);
-
+        return preferred_groups.contains(o);
     }
 
     @Override
@@ -55,11 +46,11 @@ public class ConnectedUsers {
         return result;
     }
 
-    public List<Object> getPreferred_groups() {
+    public List<String> getPreferred_groups() {
         return preferred_groups;
     }
 
-    public void setPreferred_groups(List<Object> preferred_groups) {
+    public void setPreferred_groups(List<String> preferred_groups) {
         this.preferred_groups = preferred_groups;
     }
 

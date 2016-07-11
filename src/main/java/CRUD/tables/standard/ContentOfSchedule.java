@@ -20,6 +20,7 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
     private int Stream;
     private int Group;
     private int SubGroup;
+    private int ContentTableOfLesson;
 
     public ContentOfSchedule() {
         this.Discipline = 0;
@@ -29,6 +30,7 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
         this.Stream = 0;
         this.Group = 0;
         this.SubGroup = 0;
+        this.ContentTableOfLesson = 0;
     }
 
     @Override
@@ -67,7 +69,17 @@ public class ContentOfSchedule implements Comparator, Comparable, Table {
         result = 31 * result + getStream();
         result = 31 * result + getGroup();
         result = 31 * result + getSubGroup();
+        result = 31 * result + getContentTableOfLesson();
         return result;
+    }
+
+    public int getContentTableOfLesson() {
+
+        return ContentTableOfLesson;
+    }
+
+    public void setContentTableOfLesson(int contentTableOfLesson) {
+        ContentTableOfLesson = contentTableOfLesson;
     }
 
     public void setAuditorium(int auditorium) {

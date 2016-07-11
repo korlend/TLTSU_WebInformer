@@ -23,6 +23,7 @@ public class ContentOfScheduleMapper implements RowMapper<ContentOfSchedule> {
         contentOfSchedule.setEndOn(rs.getTimestamp("EndOn"));
         contentOfSchedule.setStartOn(rs.getTimestamp("StartOn"));
         contentOfSchedule.setModifiedTime(rs.getTimestamp("ModifiedTime"));
+        contentOfSchedule.setContentTableOfLesson(rs.getInt("ContentTableOfLesson"));
 
         return contentOfSchedule;
     }
