@@ -3,10 +3,13 @@ package CRUD.DAO;
 import CRUD.mappers.standard.LecturerMapper;
 import CRUD.tables.standard.Lecturer;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -35,6 +38,23 @@ public class LecturerDAO extends JdbcTemplate {
 
     public List<Lecturer> findAllMySQL() {
         return this.jdbcTemplateObjectMySQL.query("select * from Lecturer", new LecturerMapper());
+    }
+
+    public List<String> findAllMySQLActualLecturers() {
+        return this.jdbcTemplateObjectMySQL.query("select FIO from Lecturer " +
+                "where FIO not like '%Ваканси%' " +
+                        "and FIO not like '%УДАЛЕН%' " +
+                        "and FIO not like '%ВП%' " +
+                        "and FIO not like '%Центр%' " +
+                        "and FIO not like '%Физкульт%' " +
+                        "and FIO != 'd' " +
+                        "group by FIO",
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                        return resultSet.getString("FIO");
+                    }
+                });
     }
 
     public List<Lecturer> findAllOracle() {

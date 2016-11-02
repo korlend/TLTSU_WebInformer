@@ -25,6 +25,7 @@ public class MainTemplateJDBC {
     private BuildingDAO buildingDAO;
     private ChairDAO chairDAO;
     private DisciplineDAO disciplineDAO;
+    private FacultyDAO facultyDAO;
     private StreamDAO streamDAO;
     private TypeOfAuditoriumDAO typeOfAuditoriumDAO;
     private LecturerDAO lecturerDAO;
@@ -63,6 +64,7 @@ public class MainTemplateJDBC {
         buildingDAO = new BuildingDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         chairDAO = new ChairDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         disciplineDAO = new DisciplineDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
+        facultyDAO = new FacultyDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         streamDAO = new StreamDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         typeOfAuditoriumDAO = new TypeOfAuditoriumDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
         lecturerDAO = new LecturerDAO(jdbcTemplateObjectMySQL, jdbcTemplateObjectOracle);
@@ -84,6 +86,10 @@ public class MainTemplateJDBC {
 
     public List<CustomContentOfSchedule> findAllMySQL(String group, String startOn, String endOn) {
         return contentOfScheduleDAO.findAllMySQL(group, startOn, endOn);
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQLLecturerPairs(String lecturer, String startOn, String endOn) {
+        return contentOfScheduleDAO.findAllMySQLLecturerPairs(lecturer, startOn, endOn);
     }
 
     public void addConnUser(String device_id, String preferred_groups) {
@@ -238,78 +244,83 @@ public class MainTemplateJDBC {
 
     public  void fullDatabaseUpdate() {
         AbstractMap.SimpleEntry insertDelete;
-        /**
-         * 2 lvl
-         */
-        insertDelete = equalLists(contentOfScheduleDAO.findAllMySQL(), contentOfScheduleDAO.findAllOracle());
-        contentOfScheduleDAO.deleteRowsMySQL((List<ContentOfSchedule>)insertDelete.getValue());
-        List<ContentOfSchedule> toInsertContentOfSchedule = (List<ContentOfSchedule>)insertDelete.getKey();
-        /**
-         * 1 lvl
-         */
-        insertDelete = equalLists(auditoriumDAO.findAllMySQL(), auditoriumDAO.findAllOracle());
-        auditoriumDAO.deleteRowsMySQL((List<Auditorium>)insertDelete.getValue());
-        List<Auditorium> toInsertAuditorium = (List<Auditorium>)insertDelete.getKey();
 
-        insertDelete = equalLists(subGroupDAO.findAllMySQL(), subGroupDAO.findAllOracle());
-        subGroupDAO.deleteRowsMySQL((List<SubGroup>)insertDelete.getValue());
-        List<SubGroup> toInsertSubGroup = (List<SubGroup>)insertDelete.getKey();
-
-        insertDelete = equalLists(groupDAO.findAllMySQL(), groupDAO.findAllOracle());
-        groupDAO.deleteRowsMySQL((List<Group>)insertDelete.getValue());
-        List<Group> toInsertGroup = (List<Group>)insertDelete.getKey();
         /**
          * 0 lvl
          */
         insertDelete = equalLists(kindOfWorkDAO.findAllMySQL(), kindOfWorkDAO.findAllOracle());
         kindOfWorkDAO.deleteRowsMySQL((List<KindOfWork>)insertDelete.getValue());
         List<KindOfWork> toInsertKindOfWork = (List<KindOfWork>)insertDelete.getKey();
+        kindOfWorkDAO.addListMySQL(toInsertKindOfWork);
 
-        insertDelete = equalLists(lecturerDAO.findAllMySQL(), lecturerDAO.findAllOracle());
-        lecturerDAO.deleteRowsMySQL((List<Lecturer>)insertDelete.getValue());
-        List<Lecturer> toInsertLecturer = (List<Lecturer>)insertDelete.getKey();
-
-        insertDelete = equalLists(typeOfAuditoriumDAO.findAllMySQL(), typeOfAuditoriumDAO.findAllOracle());
-        typeOfAuditoriumDAO.deleteRowsMySQL((List<TypeOfAuditorium>)insertDelete.getValue());
-        List<TypeOfAuditorium> toInsertTypeOfAuditorium = (List<TypeOfAuditorium>)insertDelete.getKey();
-
-        insertDelete = equalLists(streamDAO.findAllMySQL(), streamDAO.findAllOracle());
-        streamDAO.deleteRowsMySQL((List<Stream>)insertDelete.getValue());
-        List<Stream> toInsertStream = (List<Stream>)insertDelete.getKey();
-
-        insertDelete = equalLists(disciplineDAO.findAllMySQL(), disciplineDAO.findAllOracle());
-        disciplineDAO.deleteRowsMySQL((List<Discipline>)insertDelete.getValue());
-        List<Discipline> toInsertDiscipline = (List<Discipline>)insertDelete.getKey();
-
-        insertDelete = equalLists(chairDAO.findAllMySQL(), chairDAO.findAllOracle());
-        chairDAO.deleteRowsMySQL((List<Chair>)insertDelete.getValue());
-        List<Chair> toInsertChair = (List<Chair>)insertDelete.getKey();
-
-        insertDelete = equalLists(buildingDAO.findAllMySQL(), buildingDAO.findAllOracle());
-        buildingDAO.deleteRowsMySQL((List<Building>)insertDelete.getValue());
-        List<Building> toInsertBuilding = (List<Building>)insertDelete.getKey();
+        insertDelete = equalLists(facultyDAO.findAllMySQL(), facultyDAO.findAllOracle());
+        facultyDAO.deleteRowsMySQL((List<Faculty>)insertDelete.getValue());
+        List<Faculty> toInsertFaculty = (List<Faculty>)insertDelete.getKey();
+        facultyDAO.addListMySQL(toInsertFaculty);
 
         insertDelete = equalLists(contentTableOfLessonDAO.findAllMySQL(), contentTableOfLessonDAO.findAllOracle());
         contentTableOfLessonDAO.deleteRowsMySQL((List<ContentTableOfLesson>)insertDelete.getValue());
         List<ContentTableOfLesson> toInsertContentTableOfLesson = (List<ContentTableOfLesson>)insertDelete.getKey();
+        contentTableOfLessonDAO.addListMySQL(toInsertContentTableOfLesson);
+
+        insertDelete = equalLists(buildingDAO.findAllMySQL(), buildingDAO.findAllOracle());
+        buildingDAO.deleteRowsMySQL((List<Building>)insertDelete.getValue());
+        List<Building> toInsertBuilding = (List<Building>)insertDelete.getKey();
+        buildingDAO.addListMySQL(toInsertBuilding);
+
+        insertDelete = equalLists(disciplineDAO.findAllMySQL(), disciplineDAO.findAllOracle());
+        disciplineDAO.deleteRowsMySQL((List<Discipline>)insertDelete.getValue());
+        List<Discipline> toInsertDiscipline = (List<Discipline>)insertDelete.getKey();
+        disciplineDAO.addListMySQL(toInsertDiscipline);
+
+        insertDelete = equalLists(streamDAO.findAllMySQL(), streamDAO.findAllOracle());
+        streamDAO.deleteRowsMySQL((List<Stream>)insertDelete.getValue());
+        List<Stream> toInsertStream = (List<Stream>)insertDelete.getKey();
+        streamDAO.addListMySQL(toInsertStream);
+
+        insertDelete = equalLists(typeOfAuditoriumDAO.findAllMySQL(), typeOfAuditoriumDAO.findAllOracle());
+        typeOfAuditoriumDAO.deleteRowsMySQL((List<TypeOfAuditorium>)insertDelete.getValue());
+        List<TypeOfAuditorium> toInsertTypeOfAuditorium = (List<TypeOfAuditorium>)insertDelete.getKey();
+        typeOfAuditoriumDAO.addListMySQL(toInsertTypeOfAuditorium);
 
         /**
-         * now insert this
+         * 1 lvl
          */
-
-        contentTableOfLessonDAO.addListMySQL(toInsertContentTableOfLesson);
-        buildingDAO.addListMySQL(toInsertBuilding);
+        insertDelete = equalLists(chairDAO.findAllMySQL(), chairDAO.findAllOracle());
+        chairDAO.deleteRowsMySQL((List<Chair>)insertDelete.getValue());
+        List<Chair> toInsertChair = (List<Chair>)insertDelete.getKey();
         chairDAO.addListMySQL(toInsertChair);
-        disciplineDAO.addListMySQL(toInsertDiscipline);
-        streamDAO.addListMySQL(toInsertStream);
-        typeOfAuditoriumDAO.addListMySQL(toInsertTypeOfAuditorium);
-        lecturerDAO.addListMySQL(toInsertLecturer);
-        kindOfWorkDAO.addListMySQL(toInsertKindOfWork);
-        groupDAO.addListMySQL(toInsertGroup);
-        subGroupDAO.addListMySQL(toInsertSubGroup);
-        auditoriumDAO.addListMySQL(toInsertAuditorium);
-        contentOfScheduleDAO.addListMySQL(toInsertContentOfSchedule);
 
+        insertDelete = equalLists(lecturerDAO.findAllMySQL(), lecturerDAO.findAllOracle());
+        lecturerDAO.deleteRowsMySQL((List<Lecturer>)insertDelete.getValue());
+        List<Lecturer> toInsertLecturer = (List<Lecturer>)insertDelete.getKey();
+        lecturerDAO.addListMySQL(toInsertLecturer);
+
+        insertDelete = equalLists(groupDAO.findAllMySQL(), groupDAO.findAllOracle());
+        groupDAO.deleteRowsMySQL((List<Group>)insertDelete.getValue());
+        List<Group> toInsertGroup = (List<Group>)insertDelete.getKey();
+        groupDAO.addListMySQL(toInsertGroup);
+
+        insertDelete = equalLists(auditoriumDAO.findAllMySQL(), auditoriumDAO.findAllOracle());
+        auditoriumDAO.deleteRowsMySQL((List<Auditorium>)insertDelete.getValue());
+        List<Auditorium> toInsertAuditorium = (List<Auditorium>)insertDelete.getKey();
+        auditoriumDAO.addListMySQL(toInsertAuditorium);
+
+        /**
+         * 2 lvl
+         */
+        insertDelete = equalLists(subGroupDAO.findAllMySQL(), subGroupDAO.findAllOracle());
+        subGroupDAO.deleteRowsMySQL((List<SubGroup>)insertDelete.getValue());
+        List<SubGroup> toInsertSubGroup = (List<SubGroup>)insertDelete.getKey();
+        subGroupDAO.addListMySQL(toInsertSubGroup);
+
+        /**
+         * 3 lvl
+         */
+        insertDelete = equalLists(contentOfScheduleDAO.findAllMySQL(), contentOfScheduleDAO.findAllOracle());
+        contentOfScheduleDAO.deleteRowsMySQL((List<ContentOfSchedule>)insertDelete.getValue());
+        List<ContentOfSchedule> toInsertContentOfSchedule = (List<ContentOfSchedule>)insertDelete.getKey();
+        contentOfScheduleDAO.addListMySQL(toInsertContentOfSchedule);
     }
 
     public void simpleDeleteAllMySQL() {
@@ -376,6 +387,10 @@ public class MainTemplateJDBC {
         return disciplineDAO;
     }
 
+    public FacultyDAO getFacultyDAO() {
+        return facultyDAO;
+    }
+
     public GroupDAO getGroupDAO() {
         return groupDAO;
     }
@@ -419,12 +434,12 @@ public class MainTemplateJDBC {
             (List<T> mysql,
              List<T> oracle)
     {
-        if (mysql == null && oracle == null) {
+        if ((mysql == null || mysql.size() == 0) && (oracle == null || oracle.size() == 0)) {
             return new AbstractMap.SimpleEntry<List<T>, List<T>>(new ArrayList<>(), new ArrayList<>());
         }
-        if (mysql == null)
+        if (mysql == null || mysql.size() == 0)
             return new AbstractMap.SimpleEntry<List<T>, List<T>>(oracle, new ArrayList<>());
-        if (oracle == null)
+        if (oracle == null || oracle.size() == 0)
             return new AbstractMap.SimpleEntry<List<T>, List<T>>(new ArrayList<>(), mysql);
 
         Collections.sort(mysql);

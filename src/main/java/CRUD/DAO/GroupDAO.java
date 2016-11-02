@@ -192,11 +192,13 @@ public class GroupDAO extends JdbcTemplate {
                         "SET\n" +
                         "`OID` = ?,\n" +
                         "`Course` = ?,\n" +
+                        "`Faculty` = ?,\n" +
                         "`Name` = ?\n" +
                         "WHERE `OID` = ?\n",
                 record.getOID(),
                 record.getCourse(),
                 record.getName(),
+                record.getFaculty(),
                 record.getOID());
     }
 
@@ -216,6 +218,7 @@ public class GroupDAO extends JdbcTemplate {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("Course", record.getCourse())
                 .addValue("Name", record.getName())
+                .addValue("Faculty", record.getFaculty())
                 .addValue("OID", record.getOID());
         this.jdbcInsertMySQL.execute(parameters);
     }
@@ -224,6 +227,7 @@ public class GroupDAO extends JdbcTemplate {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("Course", record.getCourse())
                 .addValue("Name", record.getName())
+                .addValue("Faculty", record.getFaculty())
                 .addValue("OID", record.getOID());
         this.jdbcInsertOracle.execute(parameters);
     }

@@ -62,11 +62,11 @@ public class ChairDAO extends JdbcTemplate {
                         "SET\n" +
                         "`OID` = ?,\n" +
                         "`Name` = ?,\n" +
-                        "`Auditorium` = ?\n" +
+                        "`Faculty` = ?\n" +
                         "WHERE `OID` = ?\n",
                 record.getOID(),
                 record.getName(),
-                record.getAuditorium(),
+                record.getFaculty(),
                 record.getOID());
     }
 
@@ -86,6 +86,7 @@ public class ChairDAO extends JdbcTemplate {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 //.addValue("Auditorium", record.getAuditorium())
                 .addValue("Name", record.getName())
+                .addValue("Faculty", record.getFaculty())
                 .addValue("OID", record.getOID());
         this.jdbcInsertMySQL.execute(parameters);
     }
@@ -94,6 +95,7 @@ public class ChairDAO extends JdbcTemplate {
         SqlParameterSource parameters = new MapSqlParameterSource()
                 //.addValue("Auditorium", record.getAuditorium())
                 .addValue("Name", record.getName())
+                .addValue("Faculty", record.getFaculty())
                 .addValue("OID", record.getOID());
         this.jdbcInsertOracle.execute(parameters);
     }

@@ -8,6 +8,8 @@ import CRUD.MainTemplateJDBC;
 import CRUD.tables.custom.ConnectedUsers;
 import CRUD.tables.custom.CustomContentOfSchedule;
 import CRUD.tables.standard.ContentOfSchedule;
+import CRUD.tables.standard.Faculty;
+import CRUD.tables.standard.Group;
 import com.response.classes.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonSimpleJsonParser;
@@ -106,8 +108,18 @@ public class DataResponseController {
     }
 
     @RequestMapping("/GetAllGroupsMySQL")
-    public List<String> GetAllGroupsMySQL() {
-        return mainTemplateJDBC.getGroupDAO().findAllGroupNamesMySQL();
+    public List<Group> GetAllGroupsMySQL() {
+        return mainTemplateJDBC.getGroupDAO().findAllMySQL();
+    }
+
+    @RequestMapping("/GetAllFacultiesMySQL")
+    public List<Faculty> GetAllFacultiesMySQL() {
+        return mainTemplateJDBC.getFacultyDAO().findAllMySQL();
+    }
+
+    @RequestMapping("/GetAllLecturersMySQL")
+    public List<String> GetAllLecturersMySQL() {
+        return mainTemplateJDBC.getLecturerDAO().findAllMySQLActualLecturers();
     }
 
     @RequestMapping("/SelectOracle")
@@ -116,7 +128,7 @@ public class DataResponseController {
         return new ArrayList<>();
     }
 
-    @RequestMapping("/get/mysql/schedule/{groupName}/{from}/{to}")
+    @RequestMapping("/get/mysql/student/schedule/{groupName}/{from}/{to}")
     public List<CustomContentOfSchedule> GetMySQLScheduleByGroupDate(
             @PathVariable(value = "groupName") String group,
             @PathVariable(value = "from") String fromDate,
@@ -137,6 +149,28 @@ public class DataResponseController {
         return new ArrayList<>();
     }
 
+    @RequestMapping("/get/mysql/lecturer/schedule/{lecturerFIO}/{from}/{to}")
+    public List<CustomContentOfSchedule> GetMySQLScheduleByLecturerDate(
+            @PathVariable(value = "lecturerFIO") String lecturer,
+            @PathVariable(value = "from") String fromDate,
+            @PathVariable(value = "to") String toDate
+    ) {
+        Calendar fromCalendarDate = Calendar.getInstance();
+        Calendar toCalendarDate = Calendar.getInstance();
+        try {
+            fromCalendarDate.setTime((new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)).parse(fromDate));
+            toCalendarDate.setTime((new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)).parse(toDate));
+            return mainTemplateJDBC.findAllMySQLLecturerPairs(
+                    lecturer,
+                    Timestamp.from(fromCalendarDate.toInstant()).toString(),
+                    Timestamp.from(toCalendarDate.toInstant()).toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    //TODO функция ниже не работает, потом разберусь почему
     @RequestMapping("/get/mysql/schedule/{groupName}/{day}")
     public List<CustomContentOfSchedule> GetMySQLScheduleByGroupDay(
             @PathVariable(value = "groupName") String group,

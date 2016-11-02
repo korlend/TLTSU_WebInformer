@@ -11,6 +11,15 @@ public class Group implements Comparator, Comparable, Table {
     private int OID;
     private int Course;
     private String Name;
+    private int Faculty;
+
+    public int getFaculty() {
+        return Faculty;
+    }
+
+    public void setFaculty(int faculty) {
+        Faculty = faculty;
+    }
 
     @Override
     public int compare(Object o1, Object o2) {
@@ -31,6 +40,7 @@ public class Group implements Comparator, Comparable, Table {
         Group group = (Group) o;
 
         if (getOID() != group.getOID()) return false;
+        if (getFaculty() != group.getFaculty()) return false;
         if (getCourse() != group.getCourse()) return false;
         return !(getName() != null ? !getName().equals(group.getName()) : group.getName() != null);
 
@@ -40,6 +50,7 @@ public class Group implements Comparator, Comparable, Table {
     public int hashCode() {
         int result = getOID();
         result = 31 * result + getCourse();
+        result = 31 * result + getFaculty();
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }
@@ -77,6 +88,7 @@ public class Group implements Comparator, Comparable, Table {
         return "Group{" +
                 "OID=" + OID +
                 ", Course=" + Course +
+                ", Faculty=" + Faculty +
                 ", Name='" + Name + '\'' +
                 '}';
     }

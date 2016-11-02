@@ -18,6 +18,7 @@ public class CustomContentOfSchedule {
     private String LecturerFIO;
     private String AuditoriumAbbr;
     private String NumberOfPair;
+    private String GroupAbbr;
 
     public void setAuditoriumAbbr(String auditoriumAbbr) {
         AuditoriumAbbr = auditoriumAbbr;
@@ -49,6 +50,14 @@ public class CustomContentOfSchedule {
 
     public void setStartOn(String startOn) {
         StartOn = startOn;
+    }
+
+    public void setGroupAbbr(String groupAbbr) {
+        GroupAbbr = groupAbbr;
+    }
+
+    public String getGroupAbbr() {
+        return GroupAbbr;
     }
 
     public String getAuditoriumAbbr() {

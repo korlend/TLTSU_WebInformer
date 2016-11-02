@@ -11,6 +11,15 @@ public class Chair implements Comparator, Comparable, Table {
     private int OID;
     private String Name;
     private int Auditorium;
+    private int Faculty;
+
+    public int getFaculty() {
+        return Faculty;
+    }
+
+    public void setFaculty(int faculty) {
+        Faculty = faculty;
+    }
 
     public void setAuditorium(int auditorium) {
         Auditorium = auditorium;
@@ -55,6 +64,7 @@ public class Chair implements Comparator, Comparable, Table {
         Chair chair = (Chair) o;
 
         if (getOID() != chair.getOID()) return false;
+        if (getFaculty() != chair.getFaculty()) return false;
         if (getAuditorium() != chair.getAuditorium()) return false;
         return !(getName() != null ? !getName().equals(chair.getName()) : chair.getName() != null);
 
@@ -65,6 +75,7 @@ public class Chair implements Comparator, Comparable, Table {
         int result = getOID();
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + getAuditorium();
+        result = 31 * result + getFaculty();
         return result;
     }
 
@@ -77,6 +88,7 @@ public class Chair implements Comparator, Comparable, Table {
         return "Chair{" +
                 "OID=" + OID +
                 ", Name='" + Name + '\'' +
+                ", Faculty='" + Faculty + '\'' +
                 ", Auditorium=" + Auditorium +
                 '}';
     }

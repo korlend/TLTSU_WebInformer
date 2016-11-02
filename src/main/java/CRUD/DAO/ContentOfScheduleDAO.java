@@ -72,12 +72,14 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "dis.`Name` as Discipline," +
                 "kow.`Name` as KindOfWork," +
                 "lect.FIO as Lecturer," +
-                "aud.`Abbr` as Auditorium " +
+                "aud.`Abbr` as Auditorium," +
+                "g.`Name` as `Group` " +
                 "from contentofschedule cos " +
                 "inner join discipline dis on cos.`Discipline` = dis.`OID` " +
                 "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
+                "inner join `group` g  on cos.`GroupOID` = g.`OID` " +
                 "where GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
                 "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupName + "%')) " +
                 "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%');";
@@ -94,15 +96,41 @@ public class ContentOfScheduleDAO extends JdbcTemplate {
                 "dis.`Name` as Discipline," +
                 "kow.`Name` as KindOfWork," +
                 "lect.FIO as Lecturer," +
-                "aud.`Abbr` as Auditorium " +
+                "aud.`Abbr` as Auditorium," +
+                "g.`Name` as `Group` " +
                 "from contentofschedule cos " +
                 "inner join discipline dis on cos.`Discipline` = dis.`OID` " +
                 "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
                 "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
                 "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
+                "inner join `group` g  on cos.`GroupOID` = g.`OID` " +
                 "where (GroupOID = (select OID from `group` where `name` like '%" + GroupName + "%' limit 1) " +
                 "or subgroup in (select OID from `subgroup` where `GroupOID` in (select OID from `group` where `name` like '%" + GroupName + "%')) " +
                 "or stream in (select OID from `stream` where `Name` like '%" + GroupName + "%')) " +
+                "and StartOn BETWEEN DATE('" + StartOn+ "') " +
+                "and DATE('" + EndOn + "') ";
+        return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());
+    }
+
+    public List<CustomContentOfSchedule> findAllMySQLLecturerPairs(String LecturerFIO, String StartOn, String EndOn) {
+        String sql = "select " +
+                "cos.OID," +
+                "cos.StartOn," +
+                "cos.EndOn," +
+                "cos.ModifiedTime," +
+                "cos.ContentTableOfLesson," +
+                "dis.`Name` as Discipline," +
+                "kow.`Name` as KindOfWork," +
+                "lect.FIO as Lecturer," +
+                "aud.`Abbr` as Auditorium," +
+                "g.`Name` as `Group` " +
+                "from contentofschedule cos " +
+                "inner join discipline dis on cos.`Discipline` = dis.`OID` " +
+                "inner join kindofwork kow on cos.`KindOfWork` = kow.`OID` " +
+                "inner join lecturer lect on cos.`Lecturer` = lect.`OID` " +
+                "inner join auditorium aud  on cos.`Auditorium` = aud.`OID` " +
+                "inner join `group` g  on cos.`GroupOID` = g.`OID` " +
+                "where lect.FIO = '" + LecturerFIO + "' " +
                 "and StartOn BETWEEN DATE('" + StartOn+ "') " +
                 "and DATE('" + EndOn + "') ";
         return this.jdbcTemplateObjectMySQL.query(sql, new CustomContentOfScheduleMapper());

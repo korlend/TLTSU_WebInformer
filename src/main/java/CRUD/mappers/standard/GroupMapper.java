@@ -14,6 +14,7 @@ public class GroupMapper implements RowMapper<Group> {
         Group group = new Group();
         group.setOID(rs.getInt("OID"));
         group.setName(rs.getString("Name"));
+        group.setFaculty(rs.getInt("Faculty"));
         group.setCourse(rs.getInt("Course"));
         return group;
     }
