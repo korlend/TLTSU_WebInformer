@@ -2,3 +2,4 @@ src/main/resources/dbconnect
 src/main/resources/lib/
 target/
 .idea
+*.iml
