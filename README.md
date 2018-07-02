@@ -1,4 +1,4 @@
-# SpringTest1
+# TLTSU_WebInformer
 My study project on Spring.<br>
 I have 2 databases:<br>
   • Oracle - university db.<br>
